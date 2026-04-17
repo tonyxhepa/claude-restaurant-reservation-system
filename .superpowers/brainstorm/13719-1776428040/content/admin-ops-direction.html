@@ -1,0 +1,173 @@
+<h2>Choose the admin direction</h2>
+<p class="subtitle">These are three ways to make <code>/admin/reservations</code> and <code>/admin/tables</code> feel more professional while keeping the same Livewire + Flux foundation.</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">A. Executive Console</div>
+        <div class="mockup-body" style="background: linear-gradient(180deg, #0f172a 0%, #111827 100%); color: #e5e7eb; min-height: 300px;">
+          <div style="padding: 18px; display: grid; gap: 14px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px;">
+              <div>
+                <div class="label" style="color:#cbd5e1;">Service Desk</div>
+                <div style="font-size: 26px; font-weight: 700;">Reservations Overview</div>
+                <div style="color:#94a3b8; margin-top: 6px;">Refined, dark, premium hospitality back-office</div>
+              </div>
+              <button class="mock-button" style="background:#f59e0b; color:#111827;">Export day sheet</button>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;">
+              <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:12px;">
+                <div class="label">Today</div>
+                <div style="font-size: 22px; font-weight: 700;">48</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:12px;">
+                <div class="label">Confirmed</div>
+                <div style="font-size: 22px; font-weight: 700;">31</div>
+              </div>
+              <div style="background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.35); border-radius:14px; padding:12px;">
+                <div class="label">Pending</div>
+                <div style="font-size: 22px; font-weight: 700; color:#fde68a;">7</div>
+              </div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:16px; overflow:hidden;">
+              <div style="display:grid; grid-template-columns: 1.2fr 0.9fr 0.8fr 0.8fr; padding:10px 14px; font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:#94a3b8; border-bottom:1px solid rgba(255,255,255,0.08);">
+                <div>Guest</div><div>Seating</div><div>Status</div><div>Action</div>
+              </div>
+              <div style="display:grid; gap:1px; background:rgba(255,255,255,0.06);">
+                <div style="display:grid; grid-template-columns: 1.2fr 0.9fr 0.8fr 0.8fr; background:#0f172a; padding:12px 14px; align-items:center;">
+                  <div><strong>Anna Petrova</strong><div style="font-size:12px; color:#94a3b8;">4 guests • 7:30 PM</div></div>
+                  <div>Table 12</div><div><span style="padding:4px 8px; border-radius:999px; background:#14532d; color:#bbf7d0; font-size:12px;">Confirmed</span></div><div>Manage</div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1.2fr 0.9fr 0.8fr 0.8fr; background:#0f172a; padding:12px 14px; align-items:center;">
+                  <div><strong>David Lane</strong><div style="font-size:12px; color:#94a3b8;">2 guests • 8:15 PM</div></div>
+                  <div>Bar 4</div><div><span style="padding:4px 8px; border-radius:999px; background:#78350f; color:#fde68a; font-size:12px;">Pending</span></div><div>Confirm</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Executive Console</h3>
+      <p>Dark, premium, and operational. Best if you want the admin area to feel like a polished hospitality control room.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">B. Editorial Light</div>
+        <div class="mockup-body" style="background: linear-gradient(180deg, #faf7f2 0%, #ffffff 100%); color: #1f2937; min-height: 300px;">
+          <div style="padding: 18px; display:grid; gap:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px;">
+              <div>
+                <div class="label" style="color:#9a6b38;">Dining Room</div>
+                <div style="font-size: 28px; font-weight: 600; font-family: Georgia, serif;">Table Management</div>
+                <div style="color:#6b7280; margin-top: 6px;">Warm, elegant, and more brand-forward than dashboard-heavy</div>
+              </div>
+              <button class="mock-button" style="background:#111827; color:#fff;">New table</button>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+              <div style="background:#fff; border:1px solid #eadfce; border-radius:16px; padding:12px;">
+                <div class="label" style="color:#a16207;">Indoor</div>
+                <div style="font-size: 22px; font-weight: 700;">12</div>
+              </div>
+              <div style="background:#fff; border:1px solid #eadfce; border-radius:16px; padding:12px;">
+                <div class="label" style="color:#a16207;">Patio</div>
+                <div style="font-size: 22px; font-weight: 700;">6</div>
+              </div>
+              <div style="background:#fff; border:1px solid #eadfce; border-radius:16px; padding:12px;">
+                <div class="label" style="color:#a16207;">Avg. cover</div>
+                <div style="font-size: 22px; font-weight: 700;">3.4</div>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+              <div style="background:#fff; border:1px solid #eadfce; border-radius:18px; padding:14px;">
+                <div style="display:flex; justify-content:space-between;"><strong>Table 08</strong><span style="font-size:12px; color:#6b7280;">Patio</span></div>
+                <div style="margin-top:8px; color:#4b5563;">4 seats</div>
+                <div style="margin-top:10px;"><span style="padding:4px 8px; border-radius:999px; background:#dcfce7; color:#166534; font-size:12px;">Active</span></div>
+              </div>
+              <div style="background:#fff; border:1px solid #eadfce; border-radius:18px; padding:14px;">
+                <div style="display:flex; justify-content:space-between;"><strong>Table 14</strong><span style="font-size:12px; color:#6b7280;">Indoor</span></div>
+                <div style="margin-top:8px; color:#4b5563;">6 seats</div>
+                <div style="margin-top:10px;"><span style="padding:4px 8px; border-radius:999px; background:#f3f4f6; color:#4b5563; font-size:12px;">Inactive</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Editorial Light</h3>
+      <p>Bright, calm, and upscale. Best if you want the admin to feel closer to the restaurant brand than a generic SaaS panel.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">C. Compact Ops Grid</div>
+        <div class="mockup-body" style="background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%); color: #0f172a; min-height: 300px;">
+          <div style="padding: 18px; display:grid; gap:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:16px;">
+              <div>
+                <div class="label" style="color:#6366f1;">Admin Center</div>
+                <div style="font-size: 26px; font-weight: 700;">Service Operations</div>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <input class="mock-input" value="Search guest or table" style="width:150px;">
+                <button class="mock-button" style="background:#312e81; color:#fff;">Filters</button>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns: 1.1fr 0.9fr; gap:12px;">
+              <div style="background:white; border:1px solid #dbeafe; border-radius:16px; padding:14px;">
+                <div style="font-weight:700; margin-bottom:8px;">Reservations Queue</div>
+                <div style="display:grid; gap:8px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#f8fafc; border-radius:12px;">
+                    <div><strong>7:00 PM</strong><div style="font-size:12px; color:#64748b;">Morgan Reed • 2 guests</div></div>
+                    <span style="padding:4px 8px; border-radius:999px; background:#fef3c7; color:#92400e; font-size:12px;">Pending</span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#f8fafc; border-radius:12px;">
+                    <div><strong>7:30 PM</strong><div style="font-size:12px; color:#64748b;">Priya Shah • 5 guests</div></div>
+                    <span style="padding:4px 8px; border-radius:999px; background:#dcfce7; color:#166534; font-size:12px;">Confirmed</span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#f8fafc; border-radius:12px;">
+                    <div><strong>8:00 PM</strong><div style="font-size:12px; color:#64748b;">Leo Kim • 3 guests</div></div>
+                    <span style="padding:4px 8px; border-radius:999px; background:#e5e7eb; color:#374151; font-size:12px;">Completed</span>
+                  </div>
+                </div>
+              </div>
+              <div style="background:white; border:1px solid #dbeafe; border-radius:16px; padding:14px;">
+                <div style="font-weight:700; margin-bottom:8px;">Floor Snapshot</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                  <div style="background:#eef2ff; border:1px solid #c7d2fe; border-radius:14px; padding:10px;">
+                    <div style="font-size:12px; color:#6366f1;">Indoor</div>
+                    <div style="font-size:20px; font-weight:700;">9 active</div>
+                  </div>
+                  <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:10px;">
+                    <div style="font-size:12px; color:#64748b;">Patio</div>
+                    <div style="font-size:20px; font-weight:700;">4 active</div>
+                  </div>
+                  <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:10px;">
+                    <div style="font-size:12px; color:#64748b;">Inactive</div>
+                    <div style="font-size:20px; font-weight:700;">2</div>
+                  </div>
+                  <div style="background:#eef2ff; border:1px solid #c7d2fe; border-radius:14px; padding:10px;">
+                    <div style="font-size:12px; color:#6366f1;">Utilization</div>
+                    <div style="font-size:20px; font-weight:700;">82%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Compact Ops Grid</h3>
+      <p>Modern, efficient, and data-first. Best if you want faster scanning and stronger at-a-glance operational cues.</p>
+    </div>
+  </div>
+</div>

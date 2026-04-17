@@ -13,6 +13,17 @@ test('admin can view tables page', function () {
     $this->actingAs($admin)->get(route('admin.tables.index'))->assertOk();
 });
 
+test('admin tables page renders the floor overview shell', function () {
+    $admin = User::factory()->create(['is_admin' => true, 'email_verified_at' => now()]);
+
+    $this->actingAs($admin)
+        ->get(route('admin.tables.index'))
+        ->assertOk()
+        ->assertSee('Dining Room')
+        ->assertSee('Floor Overview')
+        ->assertSee('Table Registry');
+});
+
 test('non-admin cannot view tables page', function () {
     $user = User::factory()->create(['email_verified_at' => now()]);
 

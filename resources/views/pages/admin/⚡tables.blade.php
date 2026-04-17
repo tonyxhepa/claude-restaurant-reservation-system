@@ -3,6 +3,7 @@
 use App\Models\RestaurantTable;
 use Flux\Flux;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Number;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
@@ -42,6 +43,61 @@ new #[Title('Tables')] class extends Component {
             ->orderBy('section')
             ->orderBy('table_number')
             ->get();
+    }
+
+    /**
+     * @return array<int, array{label: string, value: string, hint: string, accent: string}>
+     */
+    #[Computed]
+    public function tableSummary(): array
+    {
+        $tables = $this->tables;
+
+        return [
+            [
+                'label' => __('Active Tables'),
+                'value' => (string) $tables->where('is_active', true)->count(),
+                'hint' => __('Ready for seating'),
+                'accent' => 'amber',
+            ],
+            [
+                'label' => __('Inactive'),
+                'value' => (string) $tables->where('is_active', false)->count(),
+                'hint' => __('Off the floor'),
+                'accent' => 'stone',
+            ],
+            [
+                'label' => __('Capacity'),
+                'value' => (string) $tables->sum('capacity'),
+                'hint' => __('Total available seats'),
+                'accent' => 'emerald',
+            ],
+            [
+                'label' => __('Reservations'),
+                'value' => (string) $tables->sum('reservations_count'),
+                'hint' => __('Lifetime bookings tracked'),
+                'accent' => 'copper',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<int, array{section: string, tables: int, seats: string}>
+     */
+    #[Computed]
+    public function sectionSummary(): array
+    {
+        return collect(RestaurantTable::sections())
+            ->map(function (string $section): array {
+                $tables = $this->tables->where('section', $section);
+
+                return [
+                    'section' => ucfirst($section),
+                    'tables' => $tables->count(),
+                    'seats' => Number::format($tables->sum('capacity')),
+                ];
+            })
+            ->all();
     }
 
     public function openCreate(): void
@@ -87,6 +143,7 @@ new #[Title('Tables')] class extends Component {
 
         Flux::modal('table-form')->close();
         unset($this->tables);
+        unset($this->tableSummary, $this->sectionSummary);
     }
 
     public function toggleActive(int $id): void
@@ -94,80 +151,186 @@ new #[Title('Tables')] class extends Component {
         $table = RestaurantTable::findOrFail($id);
         $table->update(['is_active' => ! $table->is_active]);
         unset($this->tables);
+        unset($this->tableSummary, $this->sectionSummary);
     }
 }; ?>
 
-<section class="w-full">
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <flux:heading size="xl">{{ __('Tables') }}</flux:heading>
-            <flux:subheading>{{ __('Manage restaurant tables') }}</flux:subheading>
+<style>
+    @import url('https://fonts.bunny.net/css?family=cormorant-garamond:500,600,700|manrope:400,500,600,700');
+
+    .admin-console {
+        --console-bg: linear-gradient(180deg, rgb(15 23 42 / 0.98) 0%, rgb(24 24 27 / 0.96) 100%);
+        --console-heading: 'Cormorant Garamond', Georgia, serif;
+        --console-body: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+        font-family: var(--console-body);
+    }
+
+    .admin-console-heading {
+        font-family: var(--console-heading);
+        letter-spacing: 0.01em;
+    }
+</style>
+
+<section class="admin-console w-full p-4 sm:p-6">
+    <div class="overflow-hidden rounded-[2rem] border border-amber-400/15 bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.18),_transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.02),rgba(255,255,255,0))] shadow-[0_24px_80px_rgba(0,0,0,0.45)] ring-1 ring-white/5">
+        <div class="border-b border-white/10 bg-[var(--console-bg)] px-5 py-6 sm:px-8 sm:py-8">
+            <div class="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
+                <div class="max-w-2xl">
+                    <p class="text-[0.7rem] font-semibold uppercase tracking-[0.38em] text-amber-300/75">{{ __('Dining Room') }}</p>
+                    <flux:heading size="xl" class="admin-console-heading mt-3 !text-4xl !font-semibold !text-zinc-50 sm:!text-5xl">
+                        {{ __('Floor Overview') }}
+                    </flux:heading>
+                    <flux:text class="mt-3 max-w-xl text-sm leading-6 !text-zinc-300/80 sm:text-base">
+                        {{ __('Keep every section of the room composed, seatable, and beautifully organized from a single luxury hospitality control surface.') }}
+                    </flux:text>
+                </div>
+
+                <div class="grid gap-3 rounded-[1.5rem] border border-amber-300/15 bg-white/5 p-3 sm:grid-cols-2 xl:min-w-[24rem]">
+                    @foreach ($this->sectionSummary as $section)
+                        <div class="rounded-[1.2rem] border border-white/10 bg-black/15 p-4">
+                            <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-zinc-500">{{ $section['section'] }}</p>
+                            <div class="mt-3 flex items-end justify-between gap-3">
+                                <div>
+                                    <p class="text-2xl font-semibold text-zinc-50">{{ $section['tables'] }}</p>
+                                    <p class="text-xs text-zinc-400">{{ trans_choice(':count table|:count tables', $section['tables'], ['count' => $section['tables']]) }}</p>
+                                </div>
+                                <span class="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[0.68rem] uppercase tracking-[0.24em] text-zinc-400">
+                                    {{ $section['seats'] }} {{ __('seats') }}
+                                </span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                @foreach ($this->tableSummary as $summary)
+                    @php
+                        $accentClasses = match ($summary['accent']) {
+                            'amber' => 'from-amber-300/20 via-amber-200/8 to-transparent border-amber-300/25 text-amber-100',
+                            'emerald' => 'from-emerald-300/18 via-emerald-200/8 to-transparent border-emerald-300/20 text-emerald-100',
+                            'copper' => 'from-orange-300/16 via-amber-200/8 to-transparent border-orange-300/20 text-orange-100',
+                            default => 'from-zinc-200/10 via-zinc-200/5 to-transparent border-white/10 text-zinc-100',
+                        };
+                    @endphp
+                    <div class="rounded-[1.5rem] border bg-gradient-to-br p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] {{ $accentClasses }}">
+                        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-zinc-400">{{ $summary['label'] }}</p>
+                        <div class="mt-4 flex items-end justify-between gap-4">
+                            <span class="text-3xl font-semibold tracking-tight text-white">{{ $summary['value'] }}</span>
+                            <span class="rounded-full border border-white/10 bg-black/10 px-3 py-1 text-[0.68rem] uppercase tracking-[0.24em] text-zinc-400">
+                                {{ $summary['hint'] }}
+                            </span>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
-        <flux:button variant="primary" icon="plus" wire:click="openCreate">{{ __('New Table') }}</flux:button>
+
+        <div class="bg-zinc-950/95 px-5 py-5 sm:px-8">
+            <div class="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                    <div>
+                        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-amber-200/65">{{ __('Table Registry') }}</p>
+                        <h2 class="admin-console-heading mt-2 text-3xl font-semibold text-zinc-50">{{ __('Tables') }}</h2>
+                        <p class="mt-2 text-sm text-zinc-400">{{ __('Edit floor inventory, review section balance, and keep table metadata crisp for service.') }}</p>
+                    </div>
+
+                    <flux:button variant="primary" icon="plus" wire:click="openCreate">{{ __('New Table') }}</flux:button>
+                </div>
+
+                <div class="mt-5 overflow-hidden rounded-[1.4rem] border border-white/10 bg-zinc-950/60">
+                    <flux:table>
+                        <flux:table.columns>
+                            <flux:table.column>{{ __('Table #') }}</flux:table.column>
+                            <flux:table.column>{{ __('Section') }}</flux:table.column>
+                            <flux:table.column>{{ __('Capacity') }}</flux:table.column>
+                            <flux:table.column>{{ __('Status') }}</flux:table.column>
+                            <flux:table.column>{{ __('Reservations') }}</flux:table.column>
+                            <flux:table.column>{{ __('Action') }}</flux:table.column>
+                        </flux:table.columns>
+
+                        <flux:table.rows>
+                            @foreach ($this->tables as $table)
+                                <flux:table.row wire:key="table-{{ $table->id }}">
+                                    <flux:table.cell>
+                                        <div class="space-y-1">
+                                            <p class="font-medium text-zinc-100">{{ $table->table_number }}</p>
+                                            <p class="text-xs uppercase tracking-[0.24em] text-zinc-500">{{ __('Service ready') }}</p>
+                                        </div>
+                                    </flux:table.cell>
+                                    <flux:table.cell>
+                                        <span class="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-xs uppercase tracking-[0.24em] text-zinc-300">
+                                            {{ ucfirst($table->section) }}
+                                        </span>
+                                    </flux:table.cell>
+                                    <flux:table.cell>
+                                        <div class="space-y-1">
+                                            <p class="font-medium text-zinc-100">{{ $table->capacity }}</p>
+                                            <p class="text-xs text-zinc-500">{{ trans_choice(':count seat|:count seats', $table->capacity, ['count' => $table->capacity]) }}</p>
+                                        </div>
+                                    </flux:table.cell>
+                                    <flux:table.cell>
+                                        @if ($table->is_active)
+                                            <flux:badge color="lime" size="sm">{{ __('Active') }}</flux:badge>
+                                        @else
+                                            <flux:badge color="zinc" size="sm">{{ __('Inactive') }}</flux:badge>
+                                        @endif
+                                    </flux:table.cell>
+                                    <flux:table.cell>
+                                        <p class="font-medium text-zinc-100">{{ $table->reservations_count }}</p>
+                                    </flux:table.cell>
+                                    <flux:table.cell>
+                                        <div class="flex flex-wrap gap-2">
+                                            <flux:button size="sm" wire:click="openEdit({{ $table->id }})">{{ __('Edit') }}</flux:button>
+                                            <flux:button size="sm" variant="subtle" wire:click="toggleActive({{ $table->id }})">
+                                                {{ $table->is_active ? __('Deactivate') : __('Activate') }}
+                                            </flux:button>
+                                        </div>
+                                    </flux:table.cell>
+                                </flux:table.row>
+                            @endforeach
+                        </flux:table.rows>
+                    </flux:table>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <flux:table>
-        <flux:table.columns>
-            <flux:table.column>{{ __('Table #') }}</flux:table.column>
-            <flux:table.column>{{ __('Section') }}</flux:table.column>
-            <flux:table.column>{{ __('Capacity') }}</flux:table.column>
-            <flux:table.column>{{ __('Status') }}</flux:table.column>
-            <flux:table.column>{{ __('Reservations') }}</flux:table.column>
-            <flux:table.column />
-        </flux:table.columns>
+    <flux:modal name="table-form" class="md:w-[32rem]">
+        <div class="rounded-[1.75rem] border border-amber-300/15 bg-[linear-gradient(180deg,rgba(15,23,42,0.98),rgba(24,24,27,0.98))] p-1 shadow-[0_30px_80px_rgba(0,0,0,0.55)]">
+            <form wire:submit="save" class="space-y-6 rounded-[1.45rem] border border-white/10 bg-black/15 p-6">
+                <div>
+                    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-amber-200/65">{{ $editingId ? __('Refine Table') : __('Add Table') }}</p>
+                    <flux:heading size="lg" class="admin-console-heading mt-2 !text-3xl !font-semibold !text-zinc-50">
+                        {{ $editingId ? __('Edit Table') : __('New Table') }}
+                    </flux:heading>
+                    <flux:text class="mt-2 !text-zinc-400">
+                        {{ __('Maintain floor accuracy with the same polished control surface used across the admin suite.') }}
+                    </flux:text>
+                </div>
 
-        <flux:table.rows>
-            @foreach ($this->tables as $table)
-                <flux:table.row>
-                    <flux:table.cell class="font-medium">{{ $table->table_number }}</flux:table.cell>
-                    <flux:table.cell class="capitalize">{{ $table->section }}</flux:table.cell>
-                    <flux:table.cell>{{ $table->capacity }}</flux:table.cell>
-                    <flux:table.cell>
-                        @if ($table->is_active)
-                            <flux:badge color="lime" size="sm">{{ __('Active') }}</flux:badge>
-                        @else
-                            <flux:badge color="zinc" size="sm">{{ __('Inactive') }}</flux:badge>
-                        @endif
-                    </flux:table.cell>
-                    <flux:table.cell>{{ $table->reservations_count }}</flux:table.cell>
-                    <flux:table.cell>
-                        <div class="flex gap-2">
-                            <flux:button size="sm" wire:click="openEdit({{ $table->id }})">{{ __('Edit') }}</flux:button>
-                            <flux:button size="sm" variant="subtle" wire:click="toggleActive({{ $table->id }})">
-                                {{ $table->is_active ? __('Deactivate') : __('Activate') }}
-                            </flux:button>
-                        </div>
-                    </flux:table.cell>
-                </flux:table.row>
-            @endforeach
-        </flux:table.rows>
-    </flux:table>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <flux:input wire:model="table_number" :label="__('Table number')" required />
+                    <flux:input type="number" wire:model="capacity" :label="__('Capacity')" min="1" required />
+                </div>
 
-    <flux:modal name="table-form" class="md:w-96">
-        <form wire:submit="save" class="space-y-6">
-            <div>
-                <flux:heading size="lg">{{ $editingId ? __('Edit Table') : __('New Table') }}</flux:heading>
-            </div>
+                <flux:select wire:model="section" :label="__('Section')" required>
+                    @foreach (\App\Models\RestaurantTable::sections() as $section)
+                        <flux:select.option value="{{ $section }}">{{ ucfirst($section) }}</flux:select.option>
+                    @endforeach
+                </flux:select>
 
-            <flux:input wire:model="table_number" :label="__('Table number')" required />
-            <flux:input type="number" wire:model="capacity" :label="__('Capacity')" min="1" required />
+                <flux:switch wire:model.live="is_active" :label="__('Active')" />
 
-            <flux:select wire:model="section" :label="__('Section')" required>
-                @foreach (\App\Models\RestaurantTable::sections() as $section)
-                    <flux:select.option value="{{ $section }}">{{ ucfirst($section) }}</flux:select.option>
-                @endforeach
-            </flux:select>
+                <flux:textarea wire:model="notes" :label="__('Notes')" rows="3" />
 
-            <flux:switch wire:model.live="is_active" :label="__('Active')" />
-
-            <flux:textarea wire:model="notes" :label="__('Notes')" rows="3" />
-
-            <div class="flex justify-end gap-2">
-                <flux:modal.close>
-                    <flux:button variant="ghost">{{ __('Cancel') }}</flux:button>
-                </flux:modal.close>
-                <flux:button type="submit" variant="primary">{{ __('Save') }}</flux:button>
-            </div>
-        </form>
+                <div class="flex justify-end gap-2">
+                    <flux:modal.close>
+                        <flux:button variant="ghost">{{ __('Cancel') }}</flux:button>
+                    </flux:modal.close>
+                    <flux:button type="submit" variant="primary">{{ __('Save') }}</flux:button>
+                </div>
+            </form>
+        </div>
     </flux:modal>
 </section>

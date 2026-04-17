@@ -24,6 +24,17 @@ test('admin can see all reservations', function () {
         ->assertSee($reservation->guest_name);
 });
 
+test('admin reservations page renders the executive console shell', function () {
+    $admin = User::factory()->create(['is_admin' => true, 'email_verified_at' => now()]);
+
+    $this->actingAs($admin)
+        ->get(route('admin.reservations.index'))
+        ->assertOk()
+        ->assertSee('Service Desk')
+        ->assertSee('Reservations Overview')
+        ->assertSee('Service Ledger');
+});
+
 test('admin can search by guest name', function () {
     $admin = User::factory()->create(['is_admin' => true]);
     $table = RestaurantTable::factory()->create();
