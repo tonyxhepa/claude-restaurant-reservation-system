@@ -1,0 +1,136 @@
+<h2>Dashboard Layout Approaches for Host/Hostess</h2>
+<p class="subtitle">Review different ways to organize reservation management features</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Summary Cards + Detailed Sections</h3>
+      <p>Metrics cards at top, followed by reservation list and table management sections</p>
+      <div class="mockup">
+        <div class="mockup-header">Layout Preview</div>
+        <div class="mockup-body">
+          <div style="display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 24px;">
+            <div class="mock-sidebar" style="background: #f8f9fa; padding: 16px; border-radius: 8px;">
+              <div class="mock-nav">Today: 24</div>
+              <div class="mock-nav">Confirmed: 18</div>
+              <div class="mock-nav">Pending: 6</div>
+            </div>
+            <div class="mock-sidebar" style="background: #f8f9fa; padding: 16px; border-radius: 8px;">
+              <div class="mock-nav">Confirmed: 18</div>
+            </div>
+            <div class="mock-sidebar" style="background: #f8f9fa; padding: 16px; border-radius: 8px;">
+              <div class="mock-nav">Pending: 6</div>
+            </div>
+          </div>
+          <div style="display: grid; gap: 16px;">
+            <div class="mock-content" style="background: #f8f9fa; padding: 16px; border-radius: 8px; min-height: 200px;">
+              <div class="mock-nav">Today's Reservations</div>
+              <div style="margin-top: 8px;">
+                <div class="mock-sidebar" style="background: white; padding: 8px; margin: 4px 0; border-radius: 4px;">12:00 PM - John Smith (4)</div>
+                <div class="mock-sidebar" style="background: white; padding: 8px; margin: 4px 0; border-radius: 4px;">12:30 PM - Jane Doe (2)</div>
+                <div class="mock-sidebar" style="background: white; padding: 8px; margin: 4px 0; border-radius: 4px;">1:00 PM - Bob Wilson (6)</div>
+              </div>
+            </div>
+            <div class="mock-content" style="background: #f8f9fa; padding: 16px; border-radius: 8px; min-height: 200px;">
+              <div class="mock-nav">Table Status</div>
+              <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px;">
+                <div class="mock-sidebar" style="background: #d4edda; padding: 8px; min-width: 60px; text-align: center; border-radius: 4px;">T1</div>
+                <div class="mock-sidebar" style="background: #f8d7da; padding: 8px; min-width: 60px; text-align: center; border-radius: 4px;">T2</div>
+                <div class="mock-sidebar" style="background: #d4edda; padding: 8px; min-width: 60px; text-align: center; border-radius: 4px;">T3</div>
+                <div class="mock-sidebar" style="background: #d4edda; padding: 8px; min-width: 60px; text-align: center; border-radius: 4px;">T4</div>
+                <div class="mock-sidebar" style="background: #fff3cd; padding: 8px; min-width: 60px; text-align: center; border-radius: 4px;">T5</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Tabbed Interface</h3>
+      <p>Separate tabs for different management areas (Reservations, Tables, Waitlist)</p>
+      <div class="mockup">
+        <div class="mockup-header">Layout Preview</div>
+        <div class="mockup-body">
+          <div style="margin-bottom: 16px;">
+            <div style="display: flex; border-bottom: 1px solid #dee2e6;">
+              <div class="mock-sidebar" style="background: #007bff; color: white; padding: 12px 24px; border-radius: 4px 4px 0 0;">Reservations</div>
+              <div class="mock-sidebar" style="background: #f8f9fa; padding: 12px 24px; border-radius: 4px 4px 0 0;">Tables</div>
+              <div class="mock-sidebar" style="background: #f8f9fa; padding: 12px 24px; border-radius: 4px 4px 0 0;">Waitlist</div>
+              <div class="mock-sidebar" style="background: #f8f9fa; padding: 12px 24px; border-radius: 4px 4px 0 0;">Settings</div>
+            </div>
+          </div>
+          <div class="mock-content" style="background: #f8f9fa; padding: 24px; border-radius: 0 0 8px 8px; min-height: 400px;">
+            <div class="mock-nav">Active Reservations</div>
+            <div style="margin-top: 16px;">
+              <div class="mock-sidebar" style="background: white; padding: 12px; margin: 8px 0; border-radius: 4px; display: flex; justify-content-between;">
+                <span>12:00 PM - John Smith (4)</span>
+                <span style="color: #28a745;">✓ Confirmed</span>
+                <button class="mock-button" style="background: #28a745; color: white; border: none; padding: 4px 8px; border-radius: 4px;">Check In</button>
+              </div>
+              <div class="mock-sidebar" style="background: white; padding: 12px; margin: 8px 0; border-radius: 4px; display: flex; justify-content-between;">
+                <span>12:30 PM - Jane Doe (2)</span>
+                <span style="color: #ffc107;">⏳ Pending</span>
+                <button class="mock-button" style="background: #ffc107; color: white; border: none; padding: 4px 8px; border-radius: 4px;">Check In</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Sidebar Navigation</h3>
+      <p>Persistent navigation sidebar with main content area</p>
+      <div class="mockup">
+        <div class="mockup-header">Layout Preview</div>
+        <div class="mockup-body">
+          <div style="display: flex; height: 500px;">
+            <div class="mock-sidebar" style="background: #343a40; color: white; width: 240px; padding: 20px;">
+              <div class="mock-nav" style="padding: 12px 0; border-bottom: 1px solid #495057;">Dashboard</div>
+              <div class="mock-nav" style="padding: 12px 0; border-bottom: 1px solid #495057;">Reservations</div>
+              <div class="mock-nav" style="padding: 12px 0; border-bottom: 1px solid #495057;">Tables</div>
+              <div class="mock-nav" style="padding: 12px 0; border-bottom: 1px solid #495057;">Waitlist</div>
+              <div class="mock-nav" style="padding: 12px 0;">Reports</div>
+            </div>
+            <div class="mock-content" style="flex: 1; padding: 24px; overflow-y: auto;">
+              <div style="display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 24px;">
+                <div class="mock-sidebar" style="background: #f8f9fa; padding: 16px; border-radius: 8px;">
+                  <div class="mock-nav">Today: 24</div>
+                </div>
+                <div class="mock-sidebar" style="background: #f8f9fa; padding: 16px; border-radius: 8px;">
+                  <div class="mock-nav">Confirmed: 18</div>
+                </div>
+                <div class="mock-sidebar" style="background: #f8f9fa; padding: 16px; border-radius: 8px;">
+                  <div class="mock-nav">Pending: 6</div>
+                </div>
+              </div>
+              <div class="mock-content" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <div class="mock-nav">Today's Reservations</div>
+                <div style="margin-top: 16px;">
+                  <div class="mock-sidebar" style="background: #e9ecef; padding: 12px; margin: 8px 0; border-radius: 4px; display: flex; justify-content-between;">
+                    <span>12:00 PM - John Smith (4)</span>
+                    <span>Table: T1</span>
+                    <span style="color: #28a745;">✓ Confirmed</span>
+                  </div>
+                  <div class="mock-sidebar" style="background: #e9ecef; padding: 12px; margin: 8px 0; border-radius: 4px; display: flex; justify-content-between;">
+                    <span>12:30 PM - Jane Doe (2)</span>
+                    <span>Table: T2</span>
+                    <span style="color: #ffc107;">⏳ Pending</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

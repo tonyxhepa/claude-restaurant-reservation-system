@@ -1,0 +1,126 @@
+<h2>Detailed View: Reservations & Table Management</h2>
+<p class="subtitle">Showing how the detailed sections would look below the summary cards</p>
+
+<div class="mockup">
+  <div class="mockup-header">Dashboard Detailed View</div>
+  <div class="mockup-body">
+    <!-- Summary Cards Section -->
+    <div style="display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 24px;">
+      <div class="mock-sidebar" style="background: #f8f9fa; padding: 16px; border-radius: 8px; text-align: center;">
+        <div style="font-size: 0.9rem; color: #6c757d;">Today</div>
+        <div style="font-size: 2rem; font-weight: bold; color: #007bff;">24</div>
+      </div>
+      <div class="mock-sidebar" style="background: #f8f9fa; padding: 16px; border-radius: 8px; text-align: center;">
+        <div style="font-size: 0.9rem; color: #6c757d;">Confirmed</div>
+        <div style="font-size: 2rem; font-weight: bold; color: #28a745;">18</div>
+      </div>
+      <div class="mock-sidebar" style="background: #f8f9fa; padding: 16px; border-radius: 8px; text-align: center;">
+        <div style="font-size: 0.9rem; color: #6c757d;">Pending</div>
+        <div style="font-size: 2rem; font-weight: bold; color: #ffc107;">6</div>
+      </div>
+    </div>
+    
+    <!-- Detailed Sections -->
+    <div style="display: grid; gap: 24px; grid-template-columns: 2fr 1fr;">
+      
+      <!-- Reservations List -->
+      <div class="mock-sidebar" style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <div style="padding: 16px; border-bottom: 1px solid #dee2e6;">
+          <h3 style="margin: 0; color: #495057;">Today's Reservations</h3>
+          <div style="display: flex; align-items: center; margin-top: 8px;">
+            <input class="mock-input" style="flex: 1; min-width: 0;" placeholder="Search reservations...">
+            <button class="mock-button" style="background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; margin-left: 8px;">Filter</button>
+          </div>
+        </div>
+        <div style="padding: 16px; max-height: 400px; overflow-y: auto;">
+          <div style="background: #e9ecef; padding: 12px; margin: 8px 0; border-radius: 4px; display: flex; justify-content-between; align-items-center;">
+            <div>
+              <strong>12:00 PM</strong><br>
+              <span>John Smith</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <span style="background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">4</span>
+              <span style="background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">Table: T1</span>
+              <button class="mock-button" style="background: #28a745; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Check In</button>
+            </div>
+          </div>
+          <div style="background: #e9ecef; padding: 12px; margin: 8px 0; border-radius: 4px; display: flex; justify-content-between; align-items-center;">
+            <div>
+              <strong>12:30 PM</strong><br>
+              <span>Jane Doe</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <span style="background: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">2</span>
+              <span style="background: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">Table: T2</span>
+              <button class="mock-button" style="background: #ffc107; color: #212529; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Check In</button>
+            </div>
+          </div>
+          <div style="background: #e9ecef; padding: 12px; margin: 8px 0; border-radius: 4px; display: flex; justify-content-between; align-items-center;">
+            <div>
+              <strong>1:00 PM</strong><br>
+              <span>Bob Wilson</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <span style="background: #f8d7da; color: #721c24; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">6</span>
+              <span style="background: #f8d7da; color: #721c24; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">Table: T3</span>
+              <button class="mock-button" style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Check In</button>
+            </div>
+          </div>
+          <div style="background: #e9ecef; padding: 12px; margin: 8px 0; border-radius: 4px; display: flex; justify-content-between; align-items-center;">
+            <div>
+              <strong>1:30 PM</strong><br>
+              <span>Alice Brown</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <span style="background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">4</span>
+              <span style="background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">Table: T4</span>
+              <button class="mock-button" style="background: #6c757d; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Check In</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Table Status -->
+      <div class="mock-sidebar" style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <div style="padding: 16px; border-bottom: 1px solid #dee2e6;">
+          <h3 style="margin: 0; color: #495057;">Table Status</h3>
+        </div>
+        <div style="padding: 16px;">
+          <div style="display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));">
+            <div style="background: #d4edda; border-radius: 6px; padding: 16px; text-align: center; position: relative;">
+              <div style="font-size: 0.9rem; font-weight: 600; color: #155724;">T1</div>
+              <div style="font-size: 0.8rem; color: #6c757d;">Available</div>
+              <div style="position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; background: #28a745; border-radius: 50%;"></div>
+            </div>
+            <div style="background: #f8d7da; border-radius: 6px; padding: 16px; text-align: center; position: relative;">
+              <div style="font-size: 0.9rem; font-weight: 600; color: #721c24;">T2</div>
+              <div style="font-size: 0.8rem; color: #6c757d;">Occupied</div>
+              <div style="position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; background: #dc3545; border-radius: 50%;"></div>
+            </div>
+            <div style="background: #fff3cd; border-radius: 6px; padding: 16px; text-align: center; position: relative;">
+              <div style="font-size: 0.9rem; font-weight: 600; color: #856404;">T3</div>
+              <div style="font-size: 0.8rem; color: #6c757d;">Ready</div>
+              <div style="position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; background: #ffc107; border-radius: 50%;"></div>
+            </div>
+            <div style="background: #d4edda; border-radius: 6px; padding: 16px; text-align: center; position: relative;">
+              <div style="font-size: 0.9rem; font-weight: 600; color: #155724;">T4</div>
+              <div style="font-size: 0.8rem; color: #6c757d;">Available</div>
+              <div style="position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; background: #28a745; border-radius: 50%;"></div>
+            </div>
+            <div style="background: #f8d7da; border-radius: 6px; padding: 16px; text-align: center; position: relative;">
+              <div style="font-size: 0.9rem; font-weight: 600; color: #721c24;">T5</div>
+              <div style="font-size: 0.8rem; color: #6c757d;">Occupied</div>
+              <div style="position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; background: #dc3545; border-radius: 50%;"></div>
+            </div>
+            <div style="background: #e9ecef; border-radius: 6px; padding: 16px; text-align: center; position: relative;">
+              <div style="font-size: 0.9rem; font-weight: 600; color: #6c757d;">T6</div>
+              <div style="font-size: 0.8rem; color: #6c757d;">Cleaning</div>
+              <div style="position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; background: #6c757d; border-radius: 50%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
