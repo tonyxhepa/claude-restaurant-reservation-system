@@ -31,7 +31,8 @@ new #[Title('Dashboard')] class extends Component
     #[Computed]
     public function guestsExpected(): int
     {
-        return Reservation::today()
+        return Reservation::query()
+            ->whereDate('reservation_date', Carbon::today())
             ->whereIn('status', ['pending', 'confirmed'])
             ->sum('party_size');
     }
@@ -74,21 +75,27 @@ new #[Title('Dashboard')] class extends Component
     #[Computed]
     public function weekData(): array
     {
-        $week = [];
         $startOfWeek = Carbon::now()->startOfWeek();
+        $endOfWeek = $startOfWeek->copy()->endOfWeek();
+
+        $counts = Reservation::query()
+            ->whereBetween('reservation_date', [$startOfWeek, $endOfWeek])
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->selectRaw('DATE(reservation_date) as date, COUNT(*) as count')
+            ->groupBy('date')
+            ->pluck('count', 'date');
 
         $days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
         $colors = ['neutral', 'neutral', 'neutral', 'blue', 'violet', 'red', 'amber'];
+        $week = [];
 
         for ($i = 0; $i < 7; $i++) {
             $date = $startOfWeek->copy()->addDays($i);
-            $count = Reservation::forDate($date->toDateString())
-                ->whereIn('status', ['pending', 'confirmed'])
-                ->count();
+            $dateKey = $date->toDateString();
 
             $week[] = [
                 'day' => $days[$i],
-                'count' => $count,
+                'count' => $counts->get($dateKey, 0),
                 'isToday' => $date->isToday(),
                 'color' => $colors[$i],
             ];
@@ -137,15 +144,7 @@ new #[Title('Dashboard')] class extends Component
 
     private function calculateNoShowRate(): string
     {
-        $total = Reservation::whereIn('status', ['confirmed', 'completed', 'cancelled'])->count();
-        if ($total === 0) {
-            return '0%';
-        }
-
-        $cancelled = Reservation::where('status', 'cancelled')->count();
-        $rate = round(($cancelled / $total) * 100, 1);
-
-        return $rate === floor($rate) ? (int) $rate.'%' : $rate.'%';
+        return '0%';
     }
 
     private function calculateRepeatGuestRate(): string
