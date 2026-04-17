@@ -149,16 +149,19 @@ new #[Title('Dashboard')] class extends Component
 
     private function calculateRepeatGuestRate(): string
     {
-        $emails = Reservation::whereIn('status', ['confirmed', 'completed'])
+        $totalGuests = Reservation::whereIn('status', ['confirmed', 'completed'])
             ->whereNotNull('guest_email')
-            ->pluck('guest_email');
+            ->count();
 
-        if ($emails->isEmpty()) {
+        if ($totalGuests === 0) {
             return '0%';
         }
 
-        $totalGuests = $emails->count();
-        $uniqueGuests = $emails->unique()->count();
+        $uniqueGuests = Reservation::whereIn('status', ['confirmed', 'completed'])
+            ->whereNotNull('guest_email')
+            ->distinct('guest_email')
+            ->count('guest_email');
+
         $repeatCount = $totalGuests - $uniqueGuests;
         $rate = round(($repeatCount / $totalGuests) * 100, 1);
 
@@ -255,7 +258,14 @@ new #[Title('Dashboard')] class extends Component
             <div class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">
                 {{ $this->capacityUtilization }}%
             </div>
-            <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
+            <div
+                class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700"
+                role="progressbar"
+                aria-label="{{ __('Capacity utilization') }}"
+                aria-valuenow="{{ $this->capacityUtilization }}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+            >
                 <div
                     class="h-full rounded-full bg-blue-500 transition-all"
                     style="width: {{ min($this->capacityUtilization, 100) }}%"
@@ -279,6 +289,7 @@ new #[Title('Dashboard')] class extends Component
                             'bg-violet-500 text-white' => $day['isToday'] && $day['color'] === 'violet',
                             'bg-red-500 text-white' => $day['isToday'] && $day['color'] === 'red',
                             'bg-amber-500 text-white' => $day['isToday'] && $day['color'] === 'amber',
+                            'bg-blue-500 text-white' => $day['isToday'] && $day['color'] === 'neutral',
                         ])
                     >
                         <div class="text-xs font-medium opacity-80">{{ $day['day'] }}</div>
