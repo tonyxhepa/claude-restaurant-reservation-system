@@ -1,0 +1,124 @@
+<h2>Dashboard Design Directions</h2>
+<p class="subtitle">Choose the visual direction that best fits your restaurant's brand</p>
+
+<div class="cards">
+  <div class="card" data-choice="minimal" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 20px; border-radius: 12px; font-family: system-ui;">
+        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+          <div style="flex: 1; background: white; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+            <div style="color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Total Today</div>
+            <div style="font-size: 28px; font-weight: 700; color: #0f172a;">12</div>
+          </div>
+          <div style="flex: 1; background: white; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+            <div style="color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Confirmed</div>
+            <div style="font-size: 28px; font-weight: 700; color: #16a34a;">8</div>
+          </div>
+          <div style="flex: 1; background: white; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+            <div style="color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Pending</div>
+            <div style="font-size: 28px; font-weight: 700; color: #ca8a04;">4</div>
+          </div>
+        </div>
+        <div style="background: white; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+          <div style="color: #334155; font-weight: 600; margin-bottom: 12px;">Today's Reservations</div>
+          <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px;">
+            <span style="color: #64748b;">6:00 PM</span>
+            <span style="color: #0f172a; font-weight: 500;">Sarah Mitchell</span>
+            <span style="color: #64748b;">Table 3</span>
+            <span style="background: #dcfce7; color: #16a34a; padding: 2px 8px; border-radius: 4px; font-size: 11px;">Confirmed</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 10px 0; font-size: 13px;">
+            <span style="color: #64748b;">7:30 PM</span>
+            <span style="color: #0f172a; font-weight: 500;">James Wilson</span>
+            <span style="color: #64748b;">Table 5</span>
+            <span style="background: #fef9c3; color: #ca8a04; padding: 2px 8px; border-radius: 4px; font-size: 11px;">Pending</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Modern Minimal</h3>
+      <p>Clean lines, subtle shadows, generous whitespace. Professional and focused.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="bold" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 20px; border-radius: 12px; font-family: system-ui;">
+        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+          <div style="flex: 1; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 10px; padding: 16px;">
+            <div style="color: rgba(255,255,255,0.7); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Total Today</div>
+            <div style="font-size: 28px; font-weight: 700; color: white;">12</div>
+          </div>
+          <div style="flex: 1; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 10px; padding: 16px;">
+            <div style="color: rgba(255,255,255,0.7); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Confirmed</div>
+            <div style="font-size: 28px; font-weight: 700; color: white;">8</div>
+          </div>
+          <div style="flex: 1; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 16px;">
+            <div style="color: rgba(255,255,255,0.7); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Pending</div>
+            <div style="font-size: 28px; font-weight: 700; color: white;">4</div>
+          </div>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 16px; border: 1px solid rgba(255,255,255,0.1);">
+          <div style="color: white; font-weight: 600; margin-bottom: 12px;">Today's Reservations</div>
+          <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 13px;">
+            <span style="color: rgba(255,255,255,0.6);">6:00 PM</span>
+            <span style="color: white; font-weight: 500;">Sarah Mitchell</span>
+            <span style="color: rgba(255,255,255,0.6);">Table 3</span>
+            <span style="background: #10b981; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px;">Confirmed</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 10px 0; font-size: 13px;">
+            <span style="color: rgba(255,255,255,0.6);">7:30 PM</span>
+            <span style="color: white; font-weight: 500;">James Wilson</span>
+            <span style="color: rgba(255,255,255,0.6);">Table 5</span>
+            <span style="background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px;">Pending</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Bold & Vibrant</h3>
+      <p>Gradient cards, dark mode feel, energetic and modern. Stands out.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="warm" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%); padding: 20px; border-radius: 12px; font-family: Georgia, serif;">
+        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+          <div style="flex: 1; background: #fff; border-radius: 10px; padding: 16px; border: 1px solid #fbbf24;">
+            <div style="color: #92400e; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Total Today</div>
+            <div style="font-size: 28px; font-weight: 700; color: #78350f;">12</div>
+          </div>
+          <div style="flex: 1; background: #fff; border-radius: 10px; padding: 16px; border: 1px solid #84cc16;">
+            <div style="color: #4d7c0f; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Confirmed</div>
+            <div style="font-size: 28px; font-weight: 700; color: #365314;">8</div>
+          </div>
+          <div style="flex: 1; background: #fff; border-radius: 10px; padding: 16px; border: 1px solid #fb923c;">
+            <div style="color: #c2410c; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Pending</div>
+            <div style="font-size: 28px; font-weight: 700; color: #7c2d12;">4</div>
+          </div>
+        </div>
+        <div style="background: #fff; border-radius: 10px; padding: 16px; border: 1px solid #fcd34d;">
+          <div style="color: #78350f; font-weight: 600; margin-bottom: 12px;">Today's Reservations</div>
+          <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #fef3c7; font-size: 13px;">
+            <span style="color: #a16207;">6:00 PM</span>
+            <span style="color: #451a03; font-weight: 500;">Sarah Mitchell</span>
+            <span style="color: #a16207;">Table 3</span>
+            <span style="background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 4px; font-size: 11px; border: 1px solid #86efac;">Confirmed</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 10px 0; font-size: 13px;">
+            <span style="color: #a16207;">7:30 PM</span>
+            <span style="color: #451a03; font-weight: 500;">James Wilson</span>
+            <span style="color: #a16207;">Table 5</span>
+            <span style="background: #fef3c7; color: #b45309; padding: 2px 8px; border-radius: 4px; font-size: 11px; border: 1px solid #fcd34d;">Pending</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Warm Hospitality</h3>
+      <p>Warm yellows and ambers, soft borders. Feels welcoming, restaurant-appropriate.</p>
+    </div>
+  </div>
+</div>
