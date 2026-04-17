@@ -6,3 +6,4 @@
 {"type":"screen-added","file":"/Users/tony/Herd/claude-res/.superpowers/brainstorm/77972-1776423811/content/waiting.html"}
 {"type":"screen-added","file":"/Users/tony/Herd/claude-res/.superpowers/brainstorm/77972-1776423811/content/dashboard-layout.html"}
 {"source":"user-event","type":"click","text":"✓\n    \n      Looks great, proceed\n      This layout captures what I need","choice":"perfect","id":null,"timestamp":1776424075515}
+{"type":"server-stopped","reason":"owner process exited"}

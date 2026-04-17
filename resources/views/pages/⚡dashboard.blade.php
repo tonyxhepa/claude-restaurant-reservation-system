@@ -332,7 +332,7 @@ new #[Title('Dashboard')] class extends Component
     </div>
 
     {{-- Row 3: Today's Reservations Table --}}
-    <div class="rounded-xl border border-neutral-200 bg-white shadow-sm dark:border-neutral-700 dark:bg-neutral-800/50">
+    <div class="rounded-xl p-2 border border-neutral-200 bg-white shadow-sm dark:border-neutral-700 dark:bg-neutral-800/50">
         <div class="border-b border-neutral-200 px-4 py-3 dark:border-neutral-700">
             <flux:heading size="sm">{{ __("Today's Reservations") }}</flux:heading>
         </div>
