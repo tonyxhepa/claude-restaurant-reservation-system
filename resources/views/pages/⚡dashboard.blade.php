@@ -1,12 +1,15 @@
 <?php
 
 use App\Models\Reservation;
+use App\Models\RestaurantTable;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('Dashboard')] class extends Component {
+new #[Title('Dashboard')] class extends Component
+{
     #[Computed]
     public function totalToday(): int
     {
@@ -23,6 +26,155 @@ new #[Title('Dashboard')] class extends Component {
     public function pendingToday(): int
     {
         return Reservation::today()->where('status', 'pending')->count();
+    }
+
+    #[Computed]
+    public function guestsExpected(): int
+    {
+        return Reservation::today()
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->sum('party_size');
+    }
+
+    #[Computed]
+    public function averagePartySize(): float
+    {
+        $count = Reservation::today()
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->count();
+
+        return $count > 0 ? round($this->guestsExpected / $count, 1) : 0;
+    }
+
+    #[Computed]
+    public function capacityUtilization(): int
+    {
+        $totalCapacity = RestaurantTable::active()->sum('capacity');
+        if ($totalCapacity === 0) {
+            return 0;
+        }
+
+        $bookedSeats = Reservation::today()
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->sum('party_size');
+
+        return (int) round(($bookedSeats / $totalCapacity) * 100);
+    }
+
+    #[Computed]
+    public function conversionRate(): int
+    {
+        if ($this->totalToday === 0) {
+            return 0;
+        }
+
+        return (int) round(($this->confirmedToday / $this->totalToday) * 100);
+    }
+
+    #[Computed]
+    public function weekData(): array
+    {
+        $week = [];
+        $startOfWeek = Carbon::now()->startOfWeek();
+
+        $days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        $colors = ['neutral', 'neutral', 'neutral', 'blue', 'violet', 'red', 'amber'];
+
+        for ($i = 0; $i < 7; $i++) {
+            $date = $startOfWeek->copy()->addDays($i);
+            $count = Reservation::forDate($date->toDateString())
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->count();
+
+            $week[] = [
+                'day' => $days[$i],
+                'count' => $count,
+                'isToday' => $date->isToday(),
+                'color' => $colors[$i],
+            ];
+        }
+
+        return $week;
+    }
+
+    #[Computed]
+    public function quickStats(): array
+    {
+        $reservations = Reservation::whereIn('status', ['pending', 'confirmed'])->get();
+
+        return [
+            'avgLeadTime' => $this->calculateAverageLeadTime($reservations),
+            'noShowRate' => $this->calculateNoShowRate(),
+            'repeatGuests' => $this->calculateRepeatGuestRate(),
+        ];
+    }
+
+    private function calculateAverageLeadTime(Collection $reservations): string
+    {
+        if ($reservations->isEmpty()) {
+            return '0 days';
+        }
+
+        $totalDays = 0;
+        $count = 0;
+
+        foreach ($reservations as $reservation) {
+            $daysDiff = Carbon::now()->startOfDay()->diffInDays($reservation->reservation_date->startOfDay(), false);
+            if ($daysDiff >= 0) {
+                $totalDays += $daysDiff;
+                $count++;
+            }
+        }
+
+        if ($count === 0) {
+            return '0 days';
+        }
+
+        $avg = round($totalDays / $count, 1);
+
+        return $avg === floor($avg) ? (int) $avg.' days' : $avg.' days';
+    }
+
+    private function calculateNoShowRate(): string
+    {
+        $total = Reservation::whereIn('status', ['confirmed', 'completed', 'cancelled'])->count();
+        if ($total === 0) {
+            return '0%';
+        }
+
+        $cancelled = Reservation::where('status', 'cancelled')->count();
+        $rate = round(($cancelled / $total) * 100, 1);
+
+        return $rate === floor($rate) ? (int) $rate.'%' : $rate.'%';
+    }
+
+    private function calculateRepeatGuestRate(): string
+    {
+        $emails = Reservation::whereIn('status', ['confirmed', 'completed'])
+            ->whereNotNull('guest_email')
+            ->pluck('guest_email');
+
+        if ($emails->isEmpty()) {
+            return '0%';
+        }
+
+        $totalGuests = $emails->count();
+        $uniqueGuests = $emails->unique()->count();
+        $repeatCount = $totalGuests - $uniqueGuests;
+        $rate = round(($repeatCount / $totalGuests) * 100, 1);
+
+        return $rate === floor($rate) ? (int) $rate.'%' : $rate.'%';
+    }
+
+    #[Computed]
+    public function comparisonToYesterday(): int
+    {
+        $today = Reservation::today()->whereIn('status', ['pending', 'confirmed'])->count();
+        $yesterday = Reservation::forDate(Carbon::yesterday()->toDateString())
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->count();
+
+        return $today - $yesterday;
     }
 
     /**
