@@ -203,24 +203,16 @@ new #[Title('Tables')] class extends Component {
                 </div>
             </div>
 
-            <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                @foreach ($this->tableSummary as $summary)
+            <div class="-mx-5 sm:-mx-8 mt-8 grid grid-cols-2 border-t border-white/10 md:grid-cols-4">
+                @foreach ($this->tableSummary as $i => $summary)
                     @php
-                        $accentClasses = match ($summary['accent']) {
-                            'amber' => 'from-amber-300/20 via-amber-200/8 to-transparent border-amber-300/25 text-amber-100',
-                            'emerald' => 'from-emerald-300/18 via-emerald-200/8 to-transparent border-emerald-300/20 text-emerald-100',
-                            'copper' => 'from-orange-300/16 via-amber-200/8 to-transparent border-orange-300/20 text-orange-100',
-                            default => 'from-zinc-200/10 via-zinc-200/5 to-transparent border-white/10 text-zinc-100',
-                        };
+                        $isLast = $i === count($this->tableSummary) - 1;
+                        $isHighlighted = $summary['accent'] === 'amber';
                     @endphp
-                    <div class="rounded-[1.5rem] border bg-gradient-to-br p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] {{ $accentClasses }}">
-                        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-zinc-400">{{ $summary['label'] }}</p>
-                        <div class="mt-4 flex items-end justify-between gap-4">
-                            <span class="text-3xl font-semibold tracking-tight text-white">{{ $summary['value'] }}</span>
-                            <span class="rounded-full border border-white/10 bg-black/10 px-3 py-1 text-[0.68rem] uppercase tracking-[0.24em] text-zinc-400">
-                                {{ $summary['hint'] }}
-                            </span>
-                        </div>
+                    <div class="{{ $isLast ? '' : 'border-r border-white/10' }} px-6 py-5 sm:px-8">
+                        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-zinc-500">{{ $summary['label'] }}</p>
+                        <p class="mt-2 text-[2rem] font-bold leading-none tracking-tight {{ $isHighlighted ? 'text-amber-300' : 'text-zinc-50' }}">{{ $summary['value'] }}</p>
+                        <p class="mt-1.5 text-[0.68rem] uppercase tracking-[0.2em] {{ $isHighlighted ? 'text-amber-400/70' : 'text-zinc-500' }}">{{ $summary['hint'] }}</p>
                     </div>
                 @endforeach
             </div>
@@ -278,6 +270,11 @@ new #[Title('Tables')] class extends Component {
                                     </flux:table.cell>
                                     <flux:table.cell>
                                         <p class="font-medium text-zinc-100">{{ $table->reservations_count }}</p>
+                                        <div class="mt-1.5 flex items-center gap-2">
+                                            <div class="h-[3px] w-24 overflow-hidden rounded-full bg-white/10">
+                                                <div class="h-full rounded-full bg-lime-400/70" style="width: {{ min(100, $table->reservations_count * 12) }}%"></div>
+                                            </div>
+                                        </div>
                                     </flux:table.cell>
                                     <flux:table.cell>
                                         <div class="flex flex-wrap gap-2">
