@@ -165,14 +165,21 @@ new #[Title('All Reservations')] class extends Component {
         font-family: var(--console-heading);
         letter-spacing: 0.01em;
     }
+
+    .hero-res-bg {
+        background:
+            radial-gradient(ellipse 60% 100% at 80% 50%, oklch(0.24 0.04 95 / 0.65) 0%, transparent 60%),
+            radial-gradient(ellipse 80% 60% at 20% 100%, oklch(0.20 0.03 80 / 0.45) 0%, transparent 50%),
+            linear-gradient(180deg, rgb(15 23 42 / 0.98) 0%, rgb(24 24 27 / 0.96) 100%);
+    }
 </style>
 
 <section class="admin-console w-full p-4 sm:p-6">
-    <div class="overflow-hidden rounded-[2rem] border border-amber-400/15 bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.18),_transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.02),rgba(255,255,255,0))] shadow-[0_24px_80px_rgba(0,0,0,0.45)] ring-1 ring-white/5">
-        <div class="border-b border-white/10 bg-[var(--console-bg)] px-5 py-6 sm:px-8 sm:py-8">
+    <div class="overflow-hidden rounded-[2rem] border border-lime-400/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.02),rgba(255,255,255,0))] shadow-[0_24px_80px_rgba(0,0,0,0.45)] ring-1 ring-white/5">
+        <div class="hero-res-bg border-b border-white/10 px-5 py-6 sm:px-8 sm:py-8">
             <div class="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
                 <div class="max-w-2xl">
-                    <p class="text-[0.7rem] font-semibold uppercase tracking-[0.38em] text-amber-300/75">{{ __('Service Desk') }}</p>
+                    <p class="text-[0.7rem] font-semibold uppercase tracking-[0.38em] text-lime-300/75">{{ __('Service Desk') }}</p>
                     <div class="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                         <div>
                             <flux:heading size="xl" class="admin-console-heading !text-4xl !font-semibold !text-zinc-50 sm:!text-5xl">
@@ -185,36 +192,28 @@ new #[Title('All Reservations')] class extends Component {
                     </div>
                 </div>
 
-                <div class="grid gap-3 rounded-[1.5rem] border border-amber-300/15 bg-white/5 p-3 sm:grid-cols-2 xl:min-w-[22rem]">
+                <div class="grid gap-3 rounded-[1.5rem] border border-lime-300/[0.12] bg-white/5 p-3 sm:grid-cols-2 xl:min-w-[22rem]">
                     <div class="rounded-[1.2rem] border border-white/10 bg-black/15 p-4">
                         <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-zinc-500">{{ __('Open Filters') }}</p>
                         <p class="mt-2 text-sm font-medium text-zinc-100">{{ __('Search, refine, and sort the service ledger in real time.') }}</p>
                     </div>
-                    <div class="rounded-[1.2rem] border border-amber-300/15 bg-amber-400/10 p-4">
-                        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-amber-200/80">{{ __('Live status') }}</p>
+                    <div class="rounded-[1.2rem] border border-lime-300/[0.15] bg-lime-400/[0.08] p-4">
+                        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-lime-200/80">{{ __('Live status') }}</p>
                         <p class="mt-2 text-sm font-medium text-zinc-100">{{ __('Actions remain unchanged so the team can move fast without relearning the page.') }}</p>
                     </div>
                 </div>
             </div>
 
-            <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                @foreach ($this->reservationSummary as $summary)
+            <div class="-mx-5 sm:-mx-8 mt-8 grid grid-cols-2 border-t border-white/10 md:grid-cols-4">
+                @foreach ($this->reservationSummary as $i => $summary)
                     @php
-                        $accentClasses = match ($summary['accent']) {
-                            'amber' => 'from-amber-300/20 via-amber-200/8 to-transparent border-amber-300/25 text-amber-100',
-                            'emerald' => 'from-emerald-300/18 via-emerald-200/8 to-transparent border-emerald-300/20 text-emerald-100',
-                            'copper' => 'from-orange-300/16 via-amber-200/8 to-transparent border-orange-300/20 text-orange-100',
-                            default => 'from-zinc-200/10 via-zinc-200/5 to-transparent border-white/10 text-zinc-100',
-                        };
+                        $isLast = $i === count($this->reservationSummary) - 1;
+                        $isHighlighted = $summary['accent'] === 'emerald';
                     @endphp
-                    <div class="rounded-[1.5rem] border bg-gradient-to-br p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] {{ $accentClasses }}">
-                        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-zinc-400">{{ $summary['label'] }}</p>
-                        <div class="mt-4 flex items-end justify-between gap-4">
-                            <span class="text-3xl font-semibold tracking-tight text-white">{{ $summary['value'] }}</span>
-                            <span class="rounded-full border border-white/10 bg-black/10 px-3 py-1 text-[0.68rem] uppercase tracking-[0.24em] text-zinc-400">
-                                {{ $summary['hint'] }}
-                            </span>
-                        </div>
+                    <div class="{{ $isLast ? '' : 'border-r border-white/10' }} px-6 py-5 sm:px-8">
+                        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-zinc-500">{{ $summary['label'] }}</p>
+                        <p class="mt-2 text-[2rem] font-bold leading-none tracking-tight {{ $isHighlighted ? 'text-lime-300' : 'text-zinc-50' }}">{{ $summary['value'] }}</p>
+                        <p class="mt-1.5 text-[0.68rem] uppercase tracking-[0.2em] {{ $isHighlighted ? 'text-lime-400/70' : 'text-zinc-500' }}">{{ $summary['hint'] }}</p>
                     </div>
                 @endforeach
             </div>
@@ -224,7 +223,7 @@ new #[Title('All Reservations')] class extends Component {
             <div class="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-amber-200/65">{{ __('Service Ledger') }}</p>
+                        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-lime-200/65">{{ __('Service Ledger') }}</p>
                         <h2 class="admin-console-heading mt-2 text-3xl font-semibold text-zinc-50">{{ __('All Reservations') }}</h2>
                         <p class="mt-2 text-sm text-zinc-400">{{ __('Filter the dining room book by guest, date, and status without losing the premium operational feel.') }}</p>
                     </div>
