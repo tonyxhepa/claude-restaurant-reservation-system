@@ -244,8 +244,8 @@ new #[Title('Book a Table')] class extends Component {
                 <aside class="rounded-[1.5rem] border border-white/10 bg-[#0d0b0a] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                     <div class="mb-5 flex items-center justify-between">
                         <div>
-                            <p class="text-[0.68rem] uppercase tracking-[0.32em] text-stone-500">{{ __('Reservation progress') }}</p>
-                            <p class="mt-2 text-sm text-stone-300">{{ __('Step :step of 4', ['step' => $step]) }}</p>
+                            <p class="font-mono text-[0.67rem] uppercase tracking-[0.28em] text-stone-500">{{ __('Reservation progress') }}</p>
+                            <p class="mt-2 text-sm text-stone-400">{{ __('Step :step of 4', ['step' => $step]) }}</p>
                         </div>
                         <div class="flex h-12 w-12 items-center justify-center rounded-full border border-amber-200/20 bg-amber-100/8 text-lg font-semibold text-amber-100">
                             {{ $step }}
@@ -287,24 +287,20 @@ new #[Title('Book a Table')] class extends Component {
                 <div class="rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.025))] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur sm:p-7">
                     @if ($step === 1)
                         <div class="space-y-6">
-                            <div class="space-y-3">
-                                <p class="text-[0.68rem] uppercase tracking-[0.32em] text-stone-500">{{ __('Step 1') }}</p>
-                                <flux:heading size="xl" class="text-white">{{ __('Begin your reservation') }}</flux:heading>
-                                <p class="max-w-2xl text-sm leading-7 text-stone-300">
+                            <div class="space-y-2">
+                                <p class="font-mono text-[0.67rem] uppercase tracking-[0.28em] text-stone-500">{{ __('Step 1') }}</p>
+                                <flux:heading size="xl" class="!text-[1.85rem] text-white">{{ __('Begin your reservation') }}</flux:heading>
+                                <p class="max-w-xl text-sm leading-7 text-stone-400">
                                     {{ __('Choose the evening and the size of your party. We will surface the most suitable tables available for your booking.') }}
                                 </p>
                             </div>
 
-                            <form wire:submit="searchSlots" class="grid gap-5 md:grid-cols-2">
-                                <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
-                                    <flux:input type="date" wire:model="reservation_date" :label="__('Date')" min="{{ now()->toDateString() }}" required />
-                                </div>
-                                <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
-                                    <flux:input type="number" wire:model="party_size" :label="__('Party size')" min="1" max="20" required />
-                                </div>
+                            <form wire:submit="searchSlots" class="grid gap-4 md:grid-cols-2">
+                                <flux:input type="date" wire:model="reservation_date" :label="__('Date')" min="{{ now()->toDateString() }}" required />
+                                <flux:input type="number" wire:model="party_size" :label="__('Party size')" min="1" max="20" required />
 
-                                <div class="md:col-span-2 flex flex-col gap-3 rounded-2xl border border-white/10 bg-[#0b0908] px-4 py-4 text-sm text-stone-400 sm:flex-row sm:items-center sm:justify-between">
-                                    <p>{{ __('Your details are only requested after a time is selected.') }}</p>
+                                <div class="md:col-span-2 flex flex-col gap-3 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                                    <p class="max-w-sm text-sm text-stone-500">{{ __('Your details are only requested after a time is selected.') }}</p>
                                     <flux:button type="submit" variant="primary" class="w-full sm:w-auto">
                                         {{ __('Find available times') }}
                                     </flux:button>
@@ -313,18 +309,17 @@ new #[Title('Book a Table')] class extends Component {
                         </div>
                     @elseif ($step === 2)
                         <div class="space-y-6">
-                            <div class="flex flex-col gap-4 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
-                                <div class="space-y-3">
-                                    <p class="text-[0.68rem] uppercase tracking-[0.32em] text-stone-500">{{ __('Step 2') }}</p>
-                                    <flux:heading size="xl" class="text-white">{{ __('Choose a seating time') }}</flux:heading>
-                                    <p class="max-w-2xl text-sm leading-7 text-stone-300">
-                                        {{ __('Availability is updated in real time for a party of :size on :date.', ['size' => $party_size, 'date' => $this->reservationDateLabel]) }}
-                                    </p>
+                            <div class="space-y-2">
+                                <div class="flex items-start justify-between gap-4">
+                                    <p class="font-mono text-[0.67rem] uppercase tracking-[0.28em] text-stone-500">{{ __('Step 2') }}</p>
+                                    <div class="rounded-[10px] border border-white/[0.12] bg-white/[0.06] px-3 py-1.5 text-xs text-stone-400">
+                                        {{ __('Party of :size · :date', ['size' => $party_size, 'date' => $this->reservationDateLabel]) }}
+                                    </div>
                                 </div>
-
-                                <div class="rounded-2xl border border-amber-200/15 bg-amber-100/[0.06] px-4 py-3 text-sm text-amber-50/90">
-                                    {{ __('Party of :size · :date', ['size' => $party_size, 'date' => $this->reservationDateLabel]) }}
-                                </div>
+                                <flux:heading size="xl" class="!text-[1.85rem] text-white">{{ __('Choose a seating time') }}</flux:heading>
+                                <p class="max-w-xl text-sm leading-7 text-stone-400">
+                                    {{ __('Availability is updated in real time for a party of :size on :date.', ['size' => $party_size, 'date' => $this->reservationDateLabel]) }}
+                                </p>
                             </div>
 
                             <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -334,23 +329,21 @@ new #[Title('Book a Table')] class extends Component {
                                         wire:click="selectSlot('{{ $slot['time'] }}')"
                                         @disabled($slot['available_tables'] === 0)
                                         @class([
-                                            'group rounded-[1.35rem] border px-4 py-4 text-left transition duration-200',
-                                            'border-white/10 bg-black/25 hover:-translate-y-0.5 hover:border-amber-200/30 hover:bg-amber-100/[0.06]' => $slot['available_tables'] > 0,
-                                            'cursor-not-allowed border-white/6 bg-white/[0.02] opacity-45' => $slot['available_tables'] === 0,
+                                            'group rounded-[14px] border px-4 py-4 text-left transition duration-200',
+                                            'border-white/[0.12] bg-white/[0.06] hover:border-white/[0.22] hover:bg-white/[0.09]' => $slot['available_tables'] > 0,
+                                            'cursor-not-allowed border-white/[0.06] bg-white/[0.02] opacity-40' => $slot['available_tables'] === 0,
                                         ])
                                     >
-                                        <div class="flex items-start justify-between gap-4">
+                                        <div class="flex items-start justify-between gap-3">
                                             <div>
-                                                <p class="text-lg font-semibold tracking-[-0.02em] text-white">{{ $slot['label'] }}</p>
-                                                <p class="mt-2 text-xs uppercase tracking-[0.28em] text-stone-500">{{ __('Table service') }}</p>
+                                                <p class="text-[18px] font-bold leading-tight tracking-[-0.01em] text-white">{{ $slot['label'] }}</p>
+                                                <p class="mt-2 font-mono text-[9px] uppercase tracking-[0.12em] text-stone-500">{{ __('Table service') }}</p>
                                             </div>
-
-                                            <div class="rounded-full border border-white/10 px-3 py-1 text-xs text-stone-300">
-                                                {{ $slot['available_tables'] }} {{ __('left') }}
+                                            <div class="shrink-0 text-right font-mono text-[10px] leading-snug text-stone-500">
+                                                {{ $slot['available_tables'] }}<br />{{ __('left') }}
                                             </div>
                                         </div>
-
-                                        <p class="mt-6 text-sm leading-6 text-stone-400">
+                                        <p class="mt-4 text-[13px] leading-[1.6] text-stone-400">
                                             @if ($slot['available_tables'] === 0)
                                                 {{ __('Fully committed for this seating.') }}
                                             @elseif ($slot['available_tables'] === 1)
@@ -361,7 +354,7 @@ new #[Title('Book a Table')] class extends Component {
                                         </p>
                                     </button>
                                 @empty
-                                    <div class="sm:col-span-2 xl:col-span-3 rounded-[1.35rem] border border-dashed border-white/12 bg-black/25 px-5 py-8 text-center">
+                                    <div class="sm:col-span-2 xl:col-span-3 rounded-[14px] border border-dashed border-white/[0.12] bg-white/[0.02] px-5 py-10 text-center">
                                         <p class="text-lg font-medium text-white">{{ __('No seatings available for this date.') }}</p>
                                         <p class="mx-auto mt-3 max-w-xl text-sm leading-7 text-stone-400">
                                             {{ __('Try another date or adjust the size of your party and we will check again.') }}
@@ -370,16 +363,16 @@ new #[Title('Book a Table')] class extends Component {
                                 @endforelse
                             </div>
 
-                            <div class="flex justify-start">
+                            <div class="flex justify-start border-t border-white/10 pt-5">
                                 <flux:button type="button" variant="ghost" wire:click="back">{{ __('Back') }}</flux:button>
                             </div>
                         </div>
                     @elseif ($step === 3)
-                        <div class="space-y-6">
-                            <div class="space-y-3 border-b border-white/10 pb-5">
-                                <p class="text-[0.68rem] uppercase tracking-[0.32em] text-stone-500">{{ __('Step 3') }}</p>
-                                <flux:heading size="xl" class="text-white">{{ __('Complete your reservation') }}</flux:heading>
-                                <p class="max-w-2xl text-sm leading-7 text-stone-300">
+                        <div class="space-y-5">
+                            <div class="space-y-2">
+                                <p class="font-mono text-[0.67rem] uppercase tracking-[0.28em] text-stone-500">{{ __('Step 3') }}</p>
+                                <flux:heading size="xl" class="!text-[1.85rem] text-white">{{ __('Complete your reservation') }}</flux:heading>
+                                <p class="max-w-xl text-sm leading-7 text-stone-400">
                                     {{ __('You are reserving for :date at :time, party of :size. Share your guest details and any notes the dining room should be aware of.', [
                                         'date' => $this->reservationDateLabel,
                                         'time' => $this->selectedTimeLabel,
@@ -388,7 +381,7 @@ new #[Title('Book a Table')] class extends Component {
                                 </p>
                             </div>
 
-                            <div class="rounded-[1.35rem] border border-amber-200/15 bg-amber-100/[0.06] px-4 py-4 text-sm text-amber-50/90">
+                            <div class="rounded-[10px] border border-white/[0.12] bg-white/[0.06] px-4 py-3 text-sm text-stone-400">
                                 {{ __('Selected seating · :date at :time · party of :size', [
                                     'date' => $this->reservationDateLabel,
                                     'time' => $this->selectedTimeLabel,
@@ -396,22 +389,18 @@ new #[Title('Book a Table')] class extends Component {
                                 ]) }}
                             </div>
 
-                            <form wire:submit="confirmBooking" class="grid gap-5 md:grid-cols-2">
-                                <div class="rounded-2xl border border-white/10 bg-black/20 p-4 md:col-span-2">
+                            <form wire:submit="confirmBooking" class="grid gap-4 md:grid-cols-2">
+                                <div class="md:col-span-2">
                                     <flux:input wire:model="guest_name" :label="__('Full name')" required />
                                 </div>
-                                <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
-                                    <flux:input type="email" wire:model="guest_email" :label="__('Email')" required />
-                                </div>
-                                <div class="rounded-2xl border border-white/10 bg-black/20 p-4">
-                                    <flux:input wire:model="guest_phone" :label="__('Phone')" />
-                                </div>
-                                <div class="rounded-2xl border border-white/10 bg-black/20 p-4 md:col-span-2">
+                                <flux:input type="email" wire:model="guest_email" :label="__('Email')" required />
+                                <flux:input wire:model="guest_phone" :label="__('Phone')" />
+                                <div class="md:col-span-2">
                                     <flux:textarea wire:model="special_notes" :label="__('Special notes')" rows="4" />
                                 </div>
 
-                                <div class="md:col-span-2 flex flex-col gap-3 rounded-2xl border border-white/10 bg-[#0b0908] px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-                                    <p class="max-w-xl text-sm leading-6 text-stone-400">
+                                <div class="md:col-span-2 flex flex-col gap-3 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                                    <p class="max-w-sm text-sm text-stone-500">
                                         {{ __('Dietary notes, celebrations, or timing preferences can be shared here for the team.') }}
                                     </p>
                                     <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
@@ -422,7 +411,7 @@ new #[Title('Book a Table')] class extends Component {
                             </form>
                         </div>
                     @elseif ($step === 4)
-                        <div class="space-y-6">
+                        <div class="space-y-5">
                             <div class="rounded-[1.75rem] border border-emerald-200/15 bg-[linear-gradient(180deg,rgba(16,185,129,0.12),rgba(3,7,18,0.35))] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] sm:p-8">
                                 <div class="space-y-5">
                                     <div class="inline-flex items-center rounded-full border border-emerald-200/20 bg-emerald-200/10 px-3 py-1 text-[0.68rem] font-medium uppercase tracking-[0.32em] text-emerald-50">

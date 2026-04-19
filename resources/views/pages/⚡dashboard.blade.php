@@ -179,6 +179,13 @@ new #[Title('Dashboard')] class extends Component
         return $today - $yesterday;
     }
 
+    public string $statusFilter = 'all';
+
+    public function setStatusFilter(string $status): void
+    {
+        $this->statusFilter = $status;
+    }
+
     /**
      * @return Collection<int, Reservation>
      */
@@ -188,158 +195,165 @@ new #[Title('Dashboard')] class extends Component
         return Reservation::query()
             ->with('table')
             ->today()
+            ->when($this->statusFilter !== 'all', fn ($q) => $q->where('status', $this->statusFilter))
             ->orderBy('start_time')
             ->get();
     }
 }; ?>
 
-<section class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl p-4">
-    {{-- Row 1: Key Metrics (4 cards) --}}
-    <div class="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {{-- Today's Total --}}
-        <div class="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-700 dark:bg-neutral-800/50">
-            <div class="text-xs font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-                {{ __('Today') }}
-            </div>
-            <div class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">
-                {{ $this->totalToday }}
-            </div>
-            <div class="mt-1 flex items-center gap-1 text-xs">
-                @if ($this->comparisonToYesterday !== 0)
-                    <span @class([
-                        'text-emerald-600 dark:text-emerald-400' => $this->comparisonToYesterday > 0,
-                        'text-red-600 dark:text-red-400' => $this->comparisonToYesterday < 0,
-                    ])>
-                        {{ $this->comparisonToYesterday > 0 ? '↑' : '↓' }}
-                        {{ abs($this->comparisonToYesterday) }}
-                    </span>
-                    <span class="text-neutral-500 dark:text-neutral-400">
-                        {{ __('from yesterday') }}
-                    </span>
-                @else
-                    <span class="text-neutral-500 dark:text-neutral-400">
-                        {{ __('Same as yesterday') }}
-                    </span>
+<style>
+    @import url('https://fonts.bunny.net/css?family=cormorant-garamond:500,600,700|manrope:400,500,600,700');
+
+    .dash { font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif; }
+    .dash-heading { font-family: 'Cormorant Garamond', Georgia, serif; letter-spacing: 0.01em; }
+</style>
+
+<section class="dash w-full p-4 sm:p-6">
+    {{-- Page header --}}
+    <div class="mb-5 flex items-end justify-between">
+        <div>
+            <p class="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{{ __('Staff · Lumière Dining Room') }}</p>
+            <h1 class="dash-heading mt-2 text-3xl font-semibold text-zinc-50">{{ __("Tonight's service") }}</h1>
+        </div>
+        <div class="flex gap-2">
+            <button class="inline-flex items-center gap-1.5 rounded-[8px] border border-white/[0.13] bg-white/[0.05] px-3.5 py-2 text-xs font-medium text-zinc-400 transition-colors hover:text-zinc-200">
+                {{ __('Export') }}
+            </button>
+            <button class="inline-flex items-center gap-1.5 rounded-[8px] border border-white/[0.18] bg-zinc-50 px-3.5 py-2 text-xs font-medium text-zinc-900 transition-opacity hover:opacity-88">
+                {{ __('+ Add walk-in') }}
+            </button>
+        </div>
+    </div>
+
+    {{-- Row 1: Stat cards --}}
+    <div class="mb-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {{-- Today --}}
+        <div class="rounded-[14px] border border-white/[0.13] bg-[oklch(0.168_0.010_68)] px-5 py-[18px]">
+            <p class="font-mono text-[9px] uppercase tracking-[0.12em] text-zinc-500">{{ __('Today') }}</p>
+            <p class="mt-2 text-[2.5rem] font-black leading-none tracking-[-0.03em] text-zinc-50">{{ $this->totalToday }}</p>
+            <div class="mt-1.5 flex items-center gap-1 text-xs text-zinc-500">
+                @if ($this->comparisonToYesterday > 0)
+                    <span class="text-lime-400">▲ {{ $this->comparisonToYesterday }}</span>
+                @elseif ($this->comparisonToYesterday < 0)
+                    <span class="text-red-400">▼ {{ abs($this->comparisonToYesterday) }}</span>
                 @endif
+                {{ __('from yesterday') }}
             </div>
         </div>
 
         {{-- Confirmed --}}
-        <div class="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-700 dark:bg-neutral-800/50">
-            <div class="text-xs font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-                {{ __('Confirmed') }}
-            </div>
-            <div class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">
-                {{ $this->confirmedToday }}
-            </div>
-            <div class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-                {{ $this->conversionRate }}% {{ __('conversion') }}
-            </div>
+        <div class="rounded-[14px] border border-white/[0.13] bg-[oklch(0.168_0.010_68)] px-5 py-[18px]">
+            <p class="font-mono text-[9px] uppercase tracking-[0.12em] text-zinc-500">{{ __('Confirmed') }}</p>
+            <p class="mt-2 text-[2.5rem] font-black leading-none tracking-[-0.03em] text-zinc-50">{{ $this->confirmedToday }}</p>
+            <p class="mt-1.5 text-xs text-zinc-500">{{ $this->conversionRate }}% {{ __('conversion') }}</p>
         </div>
 
         {{-- Guests Expected --}}
-        <div class="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-700 dark:bg-neutral-800/50">
-            <div class="text-xs font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-                {{ __('Guests Expected') }}
-            </div>
-            <div class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">
-                {{ $this->guestsExpected }}
-            </div>
-            <div class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-                {{ __('Avg') }} {{ $this->averagePartySize }} {{ __('per party') }}
-            </div>
+        <div class="rounded-[14px] border border-white/[0.13] bg-[oklch(0.168_0.010_68)] px-5 py-[18px]">
+            <p class="font-mono text-[9px] uppercase tracking-[0.12em] text-zinc-500">{{ __('Guests Expected') }}</p>
+            <p class="mt-2 text-[2.5rem] font-black leading-none tracking-[-0.03em] text-zinc-50">{{ $this->guestsExpected }}</p>
+            <p class="mt-1.5 text-xs text-zinc-500">{{ __('Avg') }} {{ $this->averagePartySize }} {{ __('per party') }}</p>
         </div>
 
         {{-- Capacity --}}
-        <div class="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-700 dark:bg-neutral-800/50">
-            <div class="text-xs font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-                {{ __('Capacity') }}
-            </div>
-            <div class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">
-                {{ $this->capacityUtilization }}%
-            </div>
+        <div class="rounded-[14px] border border-white/[0.13] bg-[oklch(0.168_0.010_68)] px-5 py-[18px]">
+            <p class="font-mono text-[9px] uppercase tracking-[0.12em] text-zinc-500">{{ __('Capacity') }}</p>
+            <p class="mt-2 text-[2.5rem] font-black leading-none tracking-[-0.03em] text-zinc-50">{{ $this->capacityUtilization }}%</p>
             <div
-                class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700"
+                class="mt-2.5 h-[4px] w-full overflow-hidden rounded-full bg-zinc-700/60"
                 role="progressbar"
-                aria-label="{{ __('Capacity utilization') }}"
                 aria-valuenow="{{ $this->capacityUtilization }}"
                 aria-valuemin="0"
                 aria-valuemax="100"
             >
-                <div
-                    class="h-full rounded-full bg-blue-500 transition-all"
-                    style="width: {{ min($this->capacityUtilization, 100) }}%"
-                ></div>
+                <div class="h-full rounded-full bg-blue-500 transition-all" style="width: {{ min($this->capacityUtilization, 100) }}%"></div>
             </div>
+            <p class="mt-1.5 text-xs text-zinc-500">{{ __('of total seats · dinner service') }}</p>
         </div>
     </div>
 
-    {{-- Row 2: Week Preview + Quick Stats --}}
-    <div class="grid gap-4 lg:grid-cols-3">
-        {{-- Week Preview --}}
-        <div class="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-700 dark:bg-neutral-800/50 lg:col-span-2">
-            <flux:heading size="sm" class="mb-3">{{ __('This Week') }}</flux:heading>
-            <div class="flex gap-2">
+    {{-- Row 2: This Week + Quick Stats --}}
+    <div class="mb-3 grid gap-3 xl:grid-cols-[1fr_17rem]">
+        {{-- This Week --}}
+        <div class="rounded-[14px] border border-white/[0.13] bg-[oklch(0.168_0.010_68)] px-5 py-[18px]">
+            <div class="mb-3.5 flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-zinc-100">{{ __('This Week') }}</h3>
+                <p class="font-mono text-[10px] tracking-[0.08em] text-zinc-500">{{ __('Mon – Sun') }}</p>
+            </div>
+            <div class="grid grid-cols-7 gap-2">
                 @foreach ($this->weekData as $day)
-                    <div
-                        @class([
-                            'flex-1 rounded-lg p-3 text-center transition-all',
-                            'bg-neutral-100 dark:bg-neutral-700/50' => !$day['isToday'],
-                            'bg-blue-500 text-white' => $day['isToday'] && $day['color'] === 'blue',
-                            'bg-violet-500 text-white' => $day['isToday'] && $day['color'] === 'violet',
-                            'bg-red-500 text-white' => $day['isToday'] && $day['color'] === 'red',
-                            'bg-amber-500 text-white' => $day['isToday'] && $day['color'] === 'amber',
-                            'bg-blue-500 text-white' => $day['isToday'] && $day['color'] === 'neutral',
-                        ])
-                    >
-                        <div class="text-xs font-medium opacity-80">{{ $day['day'] }}</div>
-                        <div class="mt-1 text-lg font-bold">{{ $day['count'] }}</div>
+                    <div @class([
+                        'rounded-[10px] border p-2.5 text-center',
+                        'border-amber-500/40 bg-amber-500/25' => $day['isToday'],
+                        'border-white/[0.12] bg-white/[0.06]' => ! $day['isToday'],
+                    ])>
+                        <p @class([
+                            'text-[10px] font-medium uppercase tracking-[0.06em]',
+                            'text-amber-400' => $day['isToday'],
+                            'text-zinc-500' => ! $day['isToday'],
+                        ])>{{ $day['day'] }}</p>
+                        <p @class([
+                            'mt-1.5 text-xl font-bold tracking-[-0.02em]',
+                            'text-amber-400' => $day['isToday'],
+                            'text-zinc-400' => ! $day['isToday'],
+                        ])>{{ $day['count'] }}</p>
+                        @if ($day['isToday'])
+                            <p class="mt-1 font-mono text-[8px] tracking-[0.06em] text-amber-400">{{ __('TODAY') }}</p>
+                        @endif
                     </div>
                 @endforeach
             </div>
         </div>
 
         {{-- Quick Stats --}}
-        <div class="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-700 dark:bg-neutral-800/50">
-            <flux:heading size="sm" class="mb-3">{{ __('Quick Stats') }}</flux:heading>
-            <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <span class="text-sm text-neutral-500 dark:text-neutral-400">
-                        {{ __('Avg lead time') }}
-                    </span>
-                    <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                        {{ $this->quickStats['avgLeadTime'] }}
-                    </span>
+        <div class="rounded-[14px] border border-white/[0.13] bg-[oklch(0.168_0.010_68)] px-5 py-[18px]">
+            <h3 class="mb-4 text-sm font-semibold text-zinc-100">{{ __('Quick Stats') }}</h3>
+            <div>
+                <div class="flex items-center justify-between border-b border-white/[0.1] py-2.5 text-sm">
+                    <span class="text-zinc-400">{{ __('Avg lead time') }}</span>
+                    <span class="font-mono text-xs font-medium text-zinc-300">{{ $this->quickStats['avgLeadTime'] }}</span>
                 </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm text-neutral-500 dark:text-neutral-400">
-                        {{ __('No-shows') }}
-                    </span>
-                    <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                        {{ $this->quickStats['noShowRate'] }}
-                    </span>
+                <div class="flex items-center justify-between border-b border-white/[0.1] py-2.5 text-sm">
+                    <span class="text-zinc-400">{{ __('No-shows (30d)') }}</span>
+                    <span class="font-mono text-xs font-medium text-zinc-300">{{ $this->quickStats['noShowRate'] }}</span>
                 </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm text-neutral-500 dark:text-neutral-400">
-                        {{ __('Repeat guests') }}
-                    </span>
-                    <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                        {{ $this->quickStats['repeatGuests'] }}
-                    </span>
+                <div class="flex items-center justify-between border-b border-white/[0.1] py-2.5 text-sm">
+                    <span class="text-zinc-400">{{ __('Repeat guests') }}</span>
+                    <span class="font-mono text-xs font-medium text-zinc-300">{{ $this->quickStats['repeatGuests'] }}</span>
+                </div>
+                <div class="flex items-center justify-between border-b border-white/[0.1] py-2.5 text-sm">
+                    <span class="text-zinc-400">{{ __('Avg party size') }}</span>
+                    <span class="font-mono text-xs font-medium text-zinc-300">{{ $this->averagePartySize }}</span>
+                </div>
+                <div class="flex items-center justify-between py-2.5 text-sm">
+                    <span class="text-zinc-400">{{ __('Walk-ins today') }}</span>
+                    <span class="font-mono text-xs font-medium text-zinc-300">0</span>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Row 3: Today's Reservations Table --}}
-    <div class="rounded-xl p-2 border border-neutral-200 bg-white shadow-sm dark:border-neutral-700 dark:bg-neutral-800/50">
-        <div class="border-b border-neutral-200 px-4 py-3 dark:border-neutral-700">
-            <flux:heading size="sm">{{ __("Today's Reservations") }}</flux:heading>
+    {{-- Row 3: Today's Reservations --}}
+    <div class="overflow-hidden rounded-[14px] border border-white/[0.13] bg-[oklch(0.168_0.010_68)]">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.1] px-5 py-4">
+            <h3 class="text-sm font-semibold text-zinc-100">{{ __("Today's Reservations") }}</h3>
+            <div class="flex gap-1.5">
+                @foreach (['all' => __('All'), 'pending' => __('Pending'), 'confirmed' => __('Confirmed')] as $val => $label)
+                    <button
+                        wire:click="setStatusFilter('{{ $val }}')"
+                        @class([
+                            'rounded-[7px] border px-3 py-1.5 text-[11px] font-medium transition-colors',
+                            'border-white/[0.18] bg-zinc-50 text-zinc-900' => $statusFilter === $val,
+                            'border-white/[0.1] bg-white/[0.04] text-zinc-500 hover:text-zinc-300' => $statusFilter !== $val,
+                        ])
+                    >{{ $label }}</button>
+                @endforeach
+            </div>
         </div>
 
         @if ($this->todaysReservations->isEmpty())
-            <div class="p-8 text-center">
-                <flux:text>{{ __('No reservations for today.') }}</flux:text>
+            <div class="px-5 py-12 text-center">
+                <p class="text-sm text-zinc-500">{{ __('No reservations match this filter.') }}</p>
             </div>
         @else
             <flux:table>
@@ -352,20 +366,20 @@ new #[Title('Dashboard')] class extends Component
                 </flux:table.columns>
                 <flux:table.rows>
                     @foreach ($this->todaysReservations as $reservation)
-                        <flux:table.row>
-                            <flux:table.cell>{{ $reservation->formattedTime() }}</flux:table.cell>
-                            <flux:table.cell>{{ $reservation->guest_name }}</flux:table.cell>
-                            <flux:table.cell>{{ $reservation->party_size }}</flux:table.cell>
-                            <flux:table.cell>{{ $reservation->table->table_number }}</flux:table.cell>
+                        @php
+                            $color = match ($reservation->status) {
+                                'pending' => 'amber',
+                                'confirmed' => 'lime',
+                                'cancelled' => 'red',
+                                'completed' => 'zinc',
+                            };
+                        @endphp
+                        <flux:table.row wire:key="dash-res-{{ $reservation->id }}">
+                            <flux:table.cell class="font-mono text-zinc-300">{{ $reservation->formattedTime() }}</flux:table.cell>
+                            <flux:table.cell class="font-medium text-zinc-100">{{ $reservation->guest_name }}</flux:table.cell>
+                            <flux:table.cell class="font-mono text-zinc-400">{{ $reservation->party_size }}</flux:table.cell>
+                            <flux:table.cell class="font-mono text-zinc-400">{{ $reservation->table->table_number }}</flux:table.cell>
                             <flux:table.cell>
-                                @php
-                                    $color = match ($reservation->status) {
-                                        'pending' => 'amber',
-                                        'confirmed' => 'lime',
-                                        'cancelled' => 'red',
-                                        'completed' => 'zinc',
-                                    };
-                                @endphp
                                 <flux:badge :color="$color" size="sm">{{ ucfirst($reservation->status) }}</flux:badge>
                             </flux:table.cell>
                         </flux:table.row>
@@ -373,5 +387,12 @@ new #[Title('Dashboard')] class extends Component
                 </flux:table.rows>
             </flux:table>
         @endif
+
+        <div class="flex flex-wrap gap-6 border-t border-white/[0.1] px-5 py-3 font-mono text-[11px] text-zinc-500">
+            <span>{{ __('Total reservations:') }} <strong class="text-zinc-300">{{ $this->totalToday }}</strong></span>
+            <span>{{ __('Confirmed:') }} <strong class="text-lime-400">{{ $this->confirmedToday }}</strong></span>
+            <span>{{ __('Pending:') }} <strong class="text-amber-400">{{ $this->pendingToday }}</strong></span>
+            <span>{{ __('Guests tonight:') }} <strong class="text-zinc-300">{{ $this->guestsExpected }}</strong></span>
+        </div>
     </div>
 </section>

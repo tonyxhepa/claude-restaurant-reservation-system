@@ -59,166 +59,121 @@ new #[Title('My Reservations')] class extends Component {
 }; ?>
 
 <style>
-    @import url('https://fonts.bunny.net/css?family=lora:400,500,600');
-    .res-heading { font-family: 'Lora', Georgia, 'Times New Roman', serif; }
+    @import url('https://fonts.bunny.net/css?family=cormorant-garamond:500,600,700|manrope:400,500,600,700');
+
+    .res-page { font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif; }
+    .res-page-heading { font-family: 'Cormorant Garamond', Georgia, serif; letter-spacing: 0.01em; }
 </style>
 
-<section class="flex h-full w-full flex-1 flex-col">
+<section class="res-page flex h-full w-full flex-1 flex-col p-4 sm:p-6">
     {{-- Page Header --}}
-    <div class="border-b border-zinc-700 bg-zinc-900/60 px-6 py-5">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-500/80">
-                    {{ __('Account') }}
-                </p>
-                <h1 class="res-heading mt-0.5 text-2xl font-medium text-zinc-100">
-                    {{ __('My Reservations') }}
-                </h1>
-            </div>
-            <flux:button
-                :href="route('reservations.book')"
-                variant="primary"
-                size="sm"
-                icon="plus"
-                wire:navigate
-            >
-                {{ __('Book a Table') }}
-            </flux:button>
+    <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+            <p class="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-500">{{ __('Account') }}</p>
+            <h1 class="res-page-heading mt-2 text-3xl font-semibold text-zinc-50">{{ __('My Reservations') }}</h1>
         </div>
+        <flux:button :href="route('reservations.book')" variant="primary" icon="plus" wire:navigate>
+            {{ __('New reservation') }}
+        </flux:button>
     </div>
 
-    <div class="flex-1 p-6">
-        {{-- Filter Tabs --}}
-        <div class="mb-5 flex border-b border-zinc-700">
-            @foreach (['upcoming' => __('Upcoming'), 'past' => __('Past'), 'all' => __('All')] as $value => $label)
-                <button
-                    wire:click="setFilter('{{ $value }}')"
-                    class="relative mr-5 pb-3 text-sm transition-colors focus:outline-none
-                        {{ $filter === $value
-                            ? 'font-semibold text-zinc-100'
-                            : 'font-medium text-zinc-500 hover:text-zinc-300' }}"
+    {{-- Filter chips --}}
+    <div class="mb-6 flex gap-2">
+        @foreach (['upcoming' => __('Upcoming'), 'past' => __('Past'), 'all' => __('All')] as $value => $label)
+            <button
+                wire:click="setFilter('{{ $value }}')"
+                @class([
+                    'rounded-[8px] border px-3.5 py-1.5 text-[12px] font-medium transition-colors',
+                    'border-white/[0.18] bg-zinc-50 text-zinc-900' => $filter === $value,
+                    'border-white/[0.1] bg-white/[0.04] text-zinc-500 hover:text-zinc-300' => $filter !== $value,
+                ])
+            >{{ $label }}</button>
+        @endforeach
+    </div>
+
+    {{-- Section label --}}
+    @if (! $this->reservations->isEmpty())
+        <p class="mb-3 font-mono text-[11px] uppercase tracking-[0.14em] text-zinc-500">
+            @if ($filter === 'upcoming')
+                {{ __('Upcoming') }} · {{ $this->reservations->count() }}
+            @elseif ($filter === 'past')
+                {{ __('Past') }} · {{ $this->reservations->count() }}
+            @else
+                {{ __('All') }} · {{ $this->reservations->count() }}
+            @endif
+        </p>
+    @endif
+
+    {{-- Empty State --}}
+    @if ($this->reservations->isEmpty())
+        <div class="flex flex-1 flex-col items-center justify-center py-20 text-center">
+            <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-white/[0.1] bg-white/[0.04]">
+                <svg class="h-6 w-6 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5" />
+                </svg>
+            </div>
+            <p class="text-sm font-medium text-zinc-300">
+                {{ $filter === 'upcoming' ? __('No upcoming reservations') : __('No reservations found') }}
+            </p>
+            <p class="mt-1.5 text-xs text-zinc-500">
+                {{ $filter === 'upcoming' ? __('Ready for your next visit?') : __('Nothing to show here.') }}
+            </p>
+            @if ($filter !== 'past')
+                <div class="mt-6">
+                    <flux:button :href="route('reservations.book')" variant="primary" wire:navigate>
+                        {{ __('Reserve a Table') }}
+                    </flux:button>
+                </div>
+            @endif
+        </div>
+
+    {{-- Reservation rows --}}
+    @else
+        <div class="space-y-2.5">
+            @foreach ($this->reservations as $reservation)
+                @php
+                    $pillClass = match ($reservation->status) {
+                        'confirmed' => 'bg-[oklch(0.25_0.04_155)] text-[oklch(0.84_0.06_155)]',
+                        'pending'   => 'bg-amber-400/15 text-amber-300',
+                        'cancelled' => 'bg-red-400/12 text-red-300',
+                        default     => 'bg-white/[0.07] text-zinc-400',
+                    };
+                @endphp
+
+                <div
+                    wire:key="res-{{ $reservation->id }}"
+                    class="grid items-center gap-5 rounded-[18px] border border-white/[0.13] bg-[oklch(0.195_0.010_68)] px-6 py-5 transition-colors hover:border-white/[0.2] sm:grid-cols-[1fr_auto_auto]"
                 >
-                    {{ $label }}
-                    @if ($filter === $value)
-                        <span class="absolute bottom-[-1px] left-0 right-0 h-[2px] rounded-full bg-amber-500"></span>
-                    @endif
-                </button>
+                    {{-- Details --}}
+                    <div>
+                        <p class="text-base font-semibold text-zinc-50">{{ __('Lumière') }}</p>
+                        <p class="mt-1 font-mono text-[12px] text-zinc-500">
+                            {{ $reservation->formattedDate() }} · {{ $reservation->formattedTime() }} · {{ trans_choice(':count guest|:count guests', $reservation->party_size, ['count' => $reservation->party_size]) }} · {{ __('Table') }} {{ $reservation->table->table_number }}
+                        </p>
+                        <p class="mt-0.5 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-600">{{ $reservation->confirmation_code }}</p>
+                    </div>
+
+                    {{-- Status pill --}}
+                    <span class="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium {{ $pillClass }}">
+                        {{ ucfirst($reservation->status) }}
+                    </span>
+
+                    {{-- Actions --}}
+                    <div class="flex gap-2">
+                        @if ($reservation->canBeCancelled())
+                            <flux:button
+                                size="sm"
+                                variant="ghost"
+                                wire:click="cancel({{ $reservation->id }})"
+                                wire:confirm="{{ __('Cancel this reservation?') }}"
+                                class="!text-zinc-500 hover:!text-red-400"
+                            >
+                                {{ __('Cancel') }}
+                            </flux:button>
+                        @endif
+                    </div>
+                </div>
             @endforeach
         </div>
-
-        {{-- Empty State --}}
-        @if ($this->reservations->isEmpty())
-            <div class="flex flex-col items-center justify-center py-20 text-center">
-                <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-zinc-800 ring-1 ring-zinc-700">
-                    <svg class="h-6 w-6 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5" />
-                    </svg>
-                </div>
-                <p class="text-sm font-medium text-zinc-300">
-                    {{ $filter === 'upcoming' ? __('No upcoming reservations') : __('No reservations found') }}
-                </p>
-                <p class="mt-1 text-xs text-zinc-600">
-                    {{ $filter === 'upcoming' ? __('Ready for your next visit?') : __('Nothing to show here.') }}
-                </p>
-                @if ($filter !== 'past')
-                    <div class="mt-5">
-                        <flux:button :href="route('reservations.book')" variant="primary" size="sm" wire:navigate>
-                            {{ __('Reserve a Table') }}
-                        </flux:button>
-                    </div>
-                @endif
-            </div>
-
-        {{-- Reservation Cards --}}
-        @else
-            <div class="space-y-2">
-                @foreach ($this->reservations as $reservation)
-                    @php
-                        $statusColor = match ($reservation->status) {
-                            'pending' => 'amber',
-                            'confirmed' => 'lime',
-                            'cancelled' => 'red',
-                            'completed' => 'zinc',
-                        };
-                        $dotClass = match ($reservation->status) {
-                            'pending' => 'bg-amber-400',
-                            'confirmed' => 'bg-lime-400',
-                            'cancelled' => 'bg-red-400',
-                            'completed' => 'bg-zinc-500',
-                        };
-                    @endphp
-
-                    <div
-                        wire:key="res-{{ $reservation->id }}"
-                        class="group flex overflow-hidden rounded-xl border border-zinc-700/80 bg-zinc-900 transition-all duration-150 hover:border-zinc-600 hover:shadow-lg hover:shadow-black/30"
-                    >
-                        {{-- Date Column --}}
-                        <div class="flex w-[4.25rem] flex-shrink-0 flex-col items-center justify-center bg-zinc-800/70 py-4">
-                            <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">
-                                {{ $reservation->reservation_date->format('M') }}
-                            </span>
-                            <span class="mt-0.5 text-[1.6rem] font-bold leading-none tabular-nums text-zinc-100">
-                                {{ $reservation->reservation_date->format('j') }}
-                            </span>
-                            <span class="mt-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-zinc-600">
-                                {{ $reservation->reservation_date->format('D') }}
-                            </span>
-                        </div>
-
-                        {{-- Divider --}}
-                        <div class="w-px self-stretch bg-zinc-700/50"></div>
-
-                        {{-- Details --}}
-                        <div class="flex min-w-0 flex-1 items-center gap-3 px-4 py-3.5 sm:px-5">
-                            <div class="min-w-0 flex-1">
-                                <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                                    <span class="text-sm font-semibold text-zinc-100">
-                                        {{ $reservation->formattedTime() }}
-                                    </span>
-                                    <span class="text-zinc-600">&middot;</span>
-                                    <span class="text-sm text-zinc-300">
-                                        {{ __('Table') }} {{ $reservation->table->table_number }}
-                                    </span>
-                                    <span class="rounded bg-zinc-800 px-1.5 py-px text-[11px] capitalize text-zinc-400 ring-1 ring-zinc-700">
-                                        {{ $reservation->table->section }}
-                                    </span>
-                                </div>
-                                <div class="mt-1.5 flex items-center gap-2">
-                                    <span class="text-xs text-zinc-500">
-                                        {{ $reservation->party_size }} {{ $reservation->party_size === 1 ? __('guest') : __('guests') }}
-                                    </span>
-                                    <span class="text-zinc-700">&middot;</span>
-                                    <span class="font-mono text-[11px] tracking-widest text-zinc-600">
-                                        {{ $reservation->confirmation_code }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {{-- Status + Action --}}
-                            <div class="flex flex-shrink-0 items-center gap-3">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="h-1.5 w-1.5 flex-shrink-0 rounded-full {{ $dotClass }}"></span>
-                                    <span class="hidden text-xs font-medium text-zinc-400 sm:inline">
-                                        {{ ucfirst($reservation->status) }}
-                                    </span>
-                                </div>
-
-                                @if ($reservation->canBeCancelled())
-                                    <flux:button
-                                        size="sm"
-                                        variant="ghost"
-                                        wire:click="cancel({{ $reservation->id }})"
-                                        wire:confirm="{{ __('Cancel this reservation?') }}"
-                                        class="text-zinc-600 opacity-60 transition-all hover:text-red-400 group-hover:opacity-100"
-                                    >
-                                        {{ __('Cancel') }}
-                                    </flux:button>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        @endif
-    </div>
+    @endif
 </section>
